@@ -1,3 +1,26 @@
+"""
+This script automates the process of comparing either two or three .gtf
+transcript files using CuffCompare. First, we run all pairwise comparisons
+between the gtf files given, because CuffCompare does non-symmetric comparisons.
+If there are 3 files, there will be 6 comparisons, and 2 files, 4 comparisons.
+After running cuffcompare, we take all the results, and take an intersection
+of transcipts called by 2 or more tools by taking an union of the following:
+Transfrag code | Keep Reference? | Keep Query?
+       c       |       yes       |     no
+       =       |       yes       |     no
+       j       |       yes       |     yes
+We then take all the unique transcripts, and construct a final file called
+xxx_intersected_transcripts.gtf by pulling from the original .gtf files. To
+generate this final file, the input .gtf files must be named in the following
+format: CellLine_TranscriptConstructionTool_Transcripts.gtf
+For example: FOM_E_Stringtie_Transcripts.gtf
+This can be achieved using the Linux "rename" command.
+Example usage:
+python cuffCompareAndIntersect AV1_N_Cufflinks_Transcripts.gtf AV1_N_Trinity_Transcripts.gtf
+
+Author: Kevin Wu - Ortiz Lab, UCSF - August 2015
+"""
+
 import subprocess
 import sys
 import re
