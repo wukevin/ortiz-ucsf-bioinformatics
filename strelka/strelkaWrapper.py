@@ -65,17 +65,13 @@ def configureStrelka(tumor, normal, configFilename, outputDir):
     command = "%s --tumor=./%s --normal=./%s --ref=/media/Data/genomes/hg19_ordered/hg19.fa --config=./%s --output-dir=./%s" % args
     print("Strelka configuration command:")
     print(command)
-    # subprocess.call(command, shell = True)
+    subprocess.call(command, shell = True)
 
 def runStrelka(outputDir):
-    # cdCommand = "cd ./%s" % (outputDir)
-    # subprocess.call(cdCommand, shell = True)
-    # runCommand = "make -j 12" # run with 12 threads by default
-    # subprocess.call(runCommand, shell=True)
     command = "make -j 12 -C ./%s" % (outputDir)
     print("Strelka execution command:")
     print(command)
-    # subprocess.call(command, shell = True)
+    subprocess.call(command, shell = True)
 
 
 def parseUserInput(userIn):
