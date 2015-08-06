@@ -41,6 +41,7 @@ import subprocess
 import sys, os
 
 def getCellLineFromFilename(f, delim = "_"):
+    f = f.split(".")[0]
     splitted = f.split(delim)
     return splitted[0]
 
@@ -60,11 +61,11 @@ def copyDefaultConfigFile(aligner, iniName):
 
 def configureStrelka(tumor, normal, configFilename, outputDir):
     configureScript = "/home/ortiz-lab/software/strelka_workflow-1.0.14/bin/bin/configureStrelkaWorkflow.pl"
-    args = (configureScript, normal, tumor, configFilename, outputDir)
+    args = (configureScript, tumor, normal, configFilename, outputDir)
     command = "%s --tumor=./%s --normal=./%s --ref=/media/Data/genomes/hg19_ordered/hg19.fa --config=./%s --output-dir=./%s" % args
     print("Strelka configuration command:")
     print(command)
-    subprocess.call(command, shell = True)
+    # subprocess.call(command, shell = True)
 
 def runStrelka(outputDir):
     # cdCommand = "cd ./%s" % (outputDir)
@@ -74,7 +75,7 @@ def runStrelka(outputDir):
     command = "make -j 12 -C ./%s" % (outputDir)
     print("Strelka execution command:")
     print(command)
-    subprocess.call(command, shell = True)
+    # subprocess.call(command, shell = True)
 
 
 def parseUserInput(userIn):
