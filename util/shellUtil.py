@@ -4,19 +4,30 @@ import sys, os
 import select
 import subprocess
 
-def executeFunctions(listOfFunc, parallel = False, simulate = False):
+def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutput = False):
+    def execHelper(c, capture = captureOutput):
+        if capture:
+            result = subprocess.check_output(c, shell = True)
+            return result
+        else:
+            subprocess.call(c, shell = True)
+            return
+    
     if len(listOfFunc) == 0: # If no commands, return
         return
-    if len(listOfFunc) == 1 or isinstance(listOfFunc, str): # If only one command, then 
+    if len(listOfFunc) == 1: # If only one command, then 
         if simulate:
             print(listOfFunc[0])
             return
         else:
-            subprocess.call(listOfFunc[0], shell = True)
+            execHelper(listOfFunc[0])
+    elif isinstance(listOfFunc, str):
+        execHelper(listOfFunc)
+    
     if parallel: # Runs each command as a background process, effectively parallelizing
         sep = " & "
         listOfFunc.append("wait") # Prevents premature termination in shell
-    else: # Runs each command as foreground
+    else: # Runs each command as foreground sequentially
         sep = " && "
     command = sep.join(listOfFunc)
     
@@ -24,7 +35,7 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False):
         print(command)
         return
     else:
-        subprocess.call(command, shell = True)
+        execHelper(command)
 
 def isStdInEmpty():
     # WARNING: This only works on Unix systems!
@@ -35,6 +46,7 @@ def isStdInEmpty():
         return True
 
 def getStdIn():
+    # Returns a list, where each element is a line of input from StdIn
     raw = sys.stdin.readlines()
     processed = []
     for line in raw:
