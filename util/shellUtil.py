@@ -15,7 +15,7 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutp
     
     if len(listOfFunc) == 0: # If no commands, return
         return
-    if len(listOfFunc) == 1: # If only one command, then 
+    elif len(listOfFunc) == 1: # If only one command, then 
         if simulate:
             print(listOfFunc[0])
             return
@@ -23,19 +23,19 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutp
             execHelper(listOfFunc[0])
     elif isinstance(listOfFunc, str):
         execHelper(listOfFunc)
-    
-    if parallel: # Runs each command as a background process, effectively parallelizing
-        sep = " & "
-        listOfFunc.append("wait") # Prevents premature termination in shell
-    else: # Runs each command as foreground sequentially
-        sep = " && "
-    command = sep.join(listOfFunc)
-    
-    if simulate: # If only simulating, print command and exit
-        print(command)
-        return
-    else:
-        execHelper(command)
+    else: # Is actually a list of functions, and treat as such
+        if parallel: # Runs each command as a background process, effectively parallelizing
+            sep = " & "
+            listOfFunc.append("wait") # Prevents premature termination in shell
+        else: # Runs each command as foreground sequentially
+            sep = " && "
+        command = sep.join(listOfFunc)
+        
+        if simulate: # If only simulating, print command and exit
+            print(command)
+            return
+        else:
+            execHelper(command)
 
 def isStdInEmpty():
     # WARNING: This only works on Unix systems!

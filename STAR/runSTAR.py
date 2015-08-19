@@ -1,6 +1,6 @@
 helpDoc = """This is a wrapper to run STAR. It takes in the following arguments:
 - fastq1 - the forward read fastq
-- fastq2 - the reverse read fastq
+- fastq2 - the reverse read fastq (This specific order!)
 By default, we run without generating a custom genome indices. This increases
 accuracy at the cost of significantly longer computation times. However, we can
 enable such functionality by using the flag --generate-genome. Example usage:
@@ -28,12 +28,10 @@ def runStar(fastq1, fastq2, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/
 def runStarGenome(fastq1, fastq2):
 	# STAR --runMode genomeGenerate --genomeDir $genomeDir2 --genomeFastaFiles $hg19dir --sjdbFileChrStartEnd $runDir/SJ.out.tab --sjdbOverhang 75 --runThreadN 16
 	genomeDir = "genome_generation"
-	inputSJ = f.longestCommonSubstring(fastq1, fastq2) + ".SJ.out.tab"
+	s.executeFunctions("mkdir " + genomeDir)
+	inputSJ = f.longestCommonSubstring(fastq1, fastq2) + "_SJ.out.tab"
 	commandTemplate = "STAR --runMode genomeGenerate --genomeDir %s --genomeFastaFiles /media/Data/genomes/GATK_hg19/hg19/ucsc.hg19.fasta --sjdbFileChrStartEnd %s --sjdbOverhang 75 --runThreadN 16"
 	command = commandTemplate % (genomeDir, inputSJ)
-
-def generateGenome(): 
-	return None
 
 def parseUserInput(args):
 	if len(args) > 3 or len(args) < 2:
@@ -44,7 +42,9 @@ def parseUserInput(args):
 	if len(args) == 2:
 		runStar(args[0], args[1])
 	elif args[0] == "--generate-genome":
-		print("Not supported!")
+		runStar(args[0], args[1])
+		runStarGenome(args[0], args[1])
+		runStar(args[0], args[1], "genome_generation")
 		exit()
 
 
