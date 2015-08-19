@@ -23,7 +23,7 @@ def downloadFromAnalysisID(analysis_id, keyFile="/media/Data2/TCGA_SKCM/cghub.ke
     commandTemplate = ' gtdownload -v -c %s -d %s'
     command = commandTemplate % (keyFile, analysis_id)
     print(command)
-    s.executeFunctions(command, simulate = False, captureOutput = False)
+    # s.executeFunctions(command, simulate = True, captureOutput = False)
 
 if (s.isStdInEmpty()):
     if len(sys.argv) < 2:
