@@ -3,8 +3,8 @@ helpDoc = """This is a wrapper to run STAR. It takes in the following arguments:
 - fastq2 - the reverse read fastq
 By default, we run without generating a custom genome indices. This increases
 accuracy at the cost of significantly longer computation times. However, we can
-enable such functionality by using the flag --genomeGenerate. Example usage:
-python runSTAR.py [--genomeGenerate] x.fastq y.fastq
+enable such functionality by using the flag --generate-genome. Example usage:
+python runSTAR.py [--generate-genome] x.fastq y.fastq
 
 Kevin Wu - Ortiz Lab UCSF - August 2015"""
 
@@ -20,19 +20,33 @@ import shellUtil as s
 
 def runStar(fastq1, fastq2, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/STAR_genomeDir_hg19_vGATK"):
 	# Runs STAR to output a coordinate soorted BAM file that is compatible with cuff
-	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s %s --runThreadN 16"
-	command = commandTemplate % (genome, fastq1, fastq2)
+	lcs = f.longestCommonSubstring(fastq1, fastq2)
+	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s %s --runThreadN 16 --outFileNamePrefix %s"
+	command = commandTemplate % (genome, fastq1, fastq2, lcs)
 	s.executeFunctions(command)
+
+def runStarGenome(fastq1, fastq2):
+	# STAR --runMode genomeGenerate --genomeDir $genomeDir2 --genomeFastaFiles $hg19dir --sjdbFileChrStartEnd $runDir/SJ.out.tab --sjdbOverhang 75 --runThreadN 16
+	genomeDir = "genome_generation"
+	inputSJ = f.longestCommonSubstring(fastq1, fastq2) + ".SJ.out.tab"
+	commandTemplate = "STAR --runMode genomeGenerate --genomeDir %s --genomeFastaFiles /media/Data/genomes/GATK_hg19/hg19/ucsc.hg19.fasta --sjdbFileChrStartEnd %s --sjdbOverhang 75 --runThreadN 16"
+	command = commandTemplate % (genomeDir, inputSJ)
 
 def generateGenome(): 
 	return None
 
 def parseUserInput(args):
-	# if len(args) > 3 or len(args) < 2:
-	# 	print("Too few args")
-	# 	print(helpDoc)
-	# print(args)
-	runStar(args[0], args[1])
+	if len(args) > 3 or len(args) < 2:
+		print("Too few args")
+		print(helpDoc)
+		exit()
+	# Done with sanity check
+	if len(args) == 2:
+		runStar(args[0], args[1])
+	elif args[0] == "--generate-genome":
+		print("Not supported!")
+		exit()
+
 
 parseUserInput(sys.argv[1:])
 
