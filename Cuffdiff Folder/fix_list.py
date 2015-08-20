@@ -82,26 +82,40 @@ for i in range(len(Order)):
                 elif 'Known_lncRNA' in category:
                     newCategory = None
                     for key in trans_list:
+                        geneName.append(GeneNames.get(key,key))
                         checkProt = key.split('_')[0]
                         if 'NM' in checkProt:
-                            newCategory = 'ProteinCoding+lncRNA'
-                            geneName.append(GeneNames.get(key,key))
-                        elif 'NR' in checkProt:
-                            linkLength = accessTranscripts.get(key[0],0)
-                            if linkLength > 200:
-                                geneName.append(str(GeneNames.get(key,key) + '(lncRNA)'))
-                                check4link = 'Protein+lncRNA'
-                            else:
-                                geneName.append(GeneNames.get(key,key))
-                        else:
-                            geneName.append(GeneNames.get(key,key))
+                            newCategory = 'ProteinCoding'
                     for values in geneName:
                         if values not in gene_seen:
                             finalset.append(values)
                             gene_seen.add(values)
                     if newCategory != None:
-                        newline = '\t'.join(cut[0:14]) + '\t' + newCategory + '\t' + ', '.join(finalset) + '\t' +'\t'.join(cut[16:23]) +'\n'
-                        output.write(newline) 
+                        newGenes = []
+                        newFinalset = []
+                        new_seen = set()
+                        check4link = None
+                        for key in trans_list:
+                            checkProt = key.split('_')[0]
+                            if 'NR' in checkProt:
+                                linkLength = accessTranscripts.get(key[0],0)
+                                if linkLength > 200:
+                                    newGenes.append(str(GeneNames.get(key,key) + '(lncRNA)'))
+                                    check4link = 'Protein+lncRNA'
+                                else:
+                                    newGenes.append(GeneNames.get(key,key))
+                            else:
+                                newGenes.append(GeneNames.get(key,key))
+                        for values in newGenes:
+                            if values not in new_seen:
+                                newFinalset.append(values)
+                                new_seen.add(values)
+                        if check4link != None:
+                            newline = '\t'.join(cut[0:14]) + '\t' + check4link + '\t' + ', '.join(newFinalset) + '\t' +'\t'.join(cut[16:23]) +'\n'
+                            output.write(newline)
+                        else:
+                            newline = '\t'.join(cut[0:14]) + '\t' + newCategory + '\t' + ', '.join(finalset) + '\t' +'\t'.join(cut[16:23]) +'\n'
+                            output.write(newline) 
                     else:
                         newCat = None
                         if "None" not in exon_list:
