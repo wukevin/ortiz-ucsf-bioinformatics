@@ -8,8 +8,9 @@ mergeGenecod = 'C:/Users/tony/Desktop/pythonAssign/Fix_Lists/FOM_Project/Merge_g
 linkF = 'C:/Users/tony/Desktop/pythonAssign/Fix_Lists/FOM_Project/refLink_08_12_15.txt' #location of the refLink file
 Order = []
 ValidationDic = {}
-accessOrf = {}
+accessExons = {}
 GeneNames = {}
+accessTranscripts = {}
 
 for path in diffFiles: #creates order of the files read and produced
     fileName = os.path.basename(path)
@@ -28,7 +29,8 @@ with open(mergeGenecod, 'rU') as fileH:
             if len(accesskey) > 2:
                 access_list.append(accesskey[1])
         ValidationDic.setdefault(access_list[0],[]).append(access_list[3])
-        accessOrf.setdefault(access_list[0],[]).append(orfLength)
+        accessExons.setdefault(access_list[0],[]).append(int(orfLength))
+        accessTranscripts.setdefault(access_list[3],[]).append(int(orfLength))
 with open(linkF, 'rU') as geneH:
     f = geneH.readline()
     for line in geneH:
@@ -52,24 +54,47 @@ for i in range(len(Order)):
             xloc = cut[0]
             category = cut[14]
             trans_list = ValidationDic.get(xloc,"None")
-            orf_list = accessOrf.get(xloc,"None")
+            exon_list = accessExons.get(xloc,"None")
             if "None" not in trans_list:
                 if 'ProteinCoding' in category:
+                    check4link = None
                     for key in trans_list:
-                        geneName.append(GeneNames.get(key,key))
+                        checkProt = key.split('_')[0]
+                        if 'NR' in checkProt:
+                            linkLength = accessTranscripts.get(key[0],0)
+                            if linkLength > 200:
+                                geneName.append(str(GeneNames.get(key,key) + '(lncRNA)'))
+                                check4link = 'Protein+lncRNA'
+                            else:
+                                geneName.append(GeneNames.get(key,key))
+                        else:
+                            geneName.append(GeneNames.get(key,key))
                     for values in geneName:
                         if values not in gene_seen:
                             finalset.append(values)
                             gene_seen.add(values)
-                    newline = '\t'.join(cut[0:15]) + '\t' + ', '.join(finalset) + '\t' + '\t'.join(cut[16:23]) + '\n'
-                    output.write(newline)
+                    if check4link != None:
+                        newline = '\t'.join(cut[0:14]) + '\t' + check4link +'\t' + ', '.join(finalset) + '\t' + '\t'.join(cut[16:23]) + '\n'
+                        output.write(newline)
+                    else:
+                        newline = '\t'.join(cut[0:15]) + '\t' + ', '.join(finalset) + '\t' + '\t'.join(cut[16:23]) + '\n'
+                        output.write(newline)
                 elif 'Known_lncRNA' in category:
                     newCategory = None
                     for key in trans_list:
-                        geneName.append(GeneNames.get(key,key))
                         checkProt = key.split('_')[0]
                         if 'NM' in checkProt:
-                            newCategory = 'ProteinCoding'
+                            newCategory = 'ProteinCoding+lncRNA'
+                            geneName.append(GeneNames.get(key,key))
+                        elif 'NR' in checkProt:
+                            linkLength = accessTranscripts.get(key[0],0)
+                            if linkLength > 200:
+                                geneName.append(str(GeneNames.get(key,key) + '(lncRNA)'))
+                                check4link = 'Protein+lncRNA'
+                            else:
+                                geneName.append(GeneNames.get(key,key))
+                        else:
+                            geneName.append(GeneNames.get(key,key))
                     for values in geneName:
                         if values not in gene_seen:
                             finalset.append(values)
@@ -79,10 +104,9 @@ for i in range(len(Order)):
                         output.write(newline) 
                     else:
                         newCat = None
-                        if "None" not in orf_list:
-                            for length in orf_list:
-                                if length > 200:
-                                    newCat = 'check'
+                        if "None" not in exon_list:
+                            if sum(exon_list) > 200:
+                                newCat = 'check'
                             if newCat == None:
                                 realCat = "Other"
                                 newline = '\t'.join(cut[0:14]) + '\t' + realCat + '\t' + ', '.join(finalset) + '\t' +'\t'.join(cut[16:23]) +'\n'
