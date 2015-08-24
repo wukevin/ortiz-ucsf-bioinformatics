@@ -8,9 +8,9 @@ bootsrap samples. Must have the following arguments in order:
 Kevin Wu - Ortiz Lab UCSF - August 2015"""
 
 import sys, subprocess
-# sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
-# import fileUtil as f
-# import shellUtil as s
+sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
+import fileUtil as f
+import shellUtil as s
 
 def runKallisto(fastq1, fastq2, index):
 	commandTemplate = "kallisto quant --index=%s --output-dir=%s --bootstrap-samples=10 --threads=10 %s %s"
