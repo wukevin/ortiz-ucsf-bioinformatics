@@ -5,6 +5,8 @@ this can be expanded in the future as necessary
 
 Kevin Wu, Ortiz Lab, UCSF, August 2015
 """
+import gzip
+import re
 
 def getCellLineFromFilename(f, delim = "_"):
     # Assumes that the cell line is the first part of the name
@@ -36,3 +38,38 @@ def longestCommonSubstring(S, T):
                 elif c == longest:
                     lcs_set.add(S[i-c+1:i+1])
     return lcs_set.pop()
+
+def stripKnownFileExtensions(filename):
+    knownFileExtensions = ["\.tar",
+                           "\.gz",
+                           "\.zip",
+                           "\.fastq",
+                           "\.fasta"]
+    for ext in knownFileExtensions:
+        re.sub(ext, '', filename)
+    return filename
+
+def meanFastqReadLength(filename):
+    # Gets the average read length from a fastq file (gzipped or not works)
+    totalLength = 0
+    totalReads = 0
+    if "gz" in filename:
+        with gzip.open(filename) as x:
+            previousLine=""
+            for line in x:
+                if len(previousLine) > 1 and previousLine[0] == "@":
+                    totalReads = totalReads + 1
+                    totalLength = totalLength + len(line)
+                previousLine = line
+        meanLength = totalLength / totalReads
+        return meanLength
+    else:
+        with open(filename) as x:
+            previousLine=""
+            for line in x:
+                if len(previousLine) > 1 and previousLine[0] == "@":
+                    totalReads = totalReads + 1
+                    totalLength = totalLength + len(line)
+                previousLine = line
+        meanLength = totalLength / totalReads
+        return meanLength
