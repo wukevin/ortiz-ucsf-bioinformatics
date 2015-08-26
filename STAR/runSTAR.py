@@ -51,9 +51,9 @@ def parseUserInput(args):
 	if len(args) == 2:
 		runStar(args[0], args[1])
 	elif args[0] == "--generate-genome":
-		runStar(args[0], args[1]) # Runs star once, get the SJ.out.tab file
-		gDir = runStarGenome(args[0], args[1]) # Runs the genome generatino using above output.
-		runStar(args[0], args[1], gDir) # Runs STAR again using custom genome.
+		runStar(args[1], args[2]) # Runs star once, get the SJ.out.tab file
+		gDir = runStarGenome(args[1], args[2]) # Runs the genome generatino using above output.
+		runStar(args[1], args[2], gDir) # Runs STAR again using custom genome.
 	else:
 		print("Unrecognized arguments.")
 		print(helpDoc)
