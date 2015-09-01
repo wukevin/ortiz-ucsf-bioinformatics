@@ -29,6 +29,8 @@ def runStar(fastq1, fastq2, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/
 	# Runs STAR to output a coordinate soorted BAM file that is compatible with cuff
 	lcs = f.longestCommonSubstring(fastq1, fastq2) # lcs = longest common substring
 	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s %s --runThreadN 16 --outFileNamePrefix %s"
+	if "gz" in fastq1 and "gz" in fastq2:
+		commandTemplate = commandTemplate + " --readFilesCommand zcat"
 	command = commandTemplate % (genome, fastq1, fastq2, lcs)
 	s.executeFunctions(command)
 
@@ -38,6 +40,8 @@ def runStarGenome(fastq1, fastq2):
 	s.executeFunctions("mkdir " + genomeDir) # Make the directory, so we can output to it.
 	inputSJ = f.longestCommonSubstring(fastq1, fastq2) + "_SJ.out.tab"
 	commandTemplate = "STAR --runMode genomeGenerate --genomeDir %s --genomeFastaFiles /media/Data/genomes/GATK_hg19/hg19/ucsc.hg19.fasta --sjdbFileChrStartEnd %s --sjdbOverhang 75 --runThreadN 16"
+	if "gz" in fastq1 and "gz" in fastq2:
+		commandTemplate = commandTemplate + " --readFilesCommand zcat"
 	command = commandTemplate % (genomeDir, inputSJ)
 	return genomeDir # Return the directory the genome was written to so we can use in subsequent star run.
 
