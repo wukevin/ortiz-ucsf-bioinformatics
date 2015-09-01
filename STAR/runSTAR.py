@@ -50,9 +50,8 @@ def parseUserInput(args):
 	if len(args) > 3 or len(args) < 2:
 		print("Too few args")
 		print(helpDoc)
-		exit()
 	# Done with sanity check
-	if len(args) == 2:
+	elif len(args) == 2:
 		runStar(args[0], args[1])
 	elif args[0] == "--generate-genome":
 		runStar(args[1], args[2]) # Runs star once, get the SJ.out.tab file
@@ -61,7 +60,6 @@ def parseUserInput(args):
 	else:
 		print("Unrecognized arguments.")
 		print(helpDoc)
-	exit()
 
 
 parseUserInput(sys.argv[1:])
