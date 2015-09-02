@@ -32,6 +32,7 @@ def runStar(fastq1, fastq2, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/
 	if "gz" in fastq1 and "gz" in fastq2:
 		commandTemplate = commandTemplate + " --readFilesCommand zcat"
 	command = commandTemplate % (genome, fastq1, fastq2, lcs)
+	print(command)
 	s.executeFunctions(command)
 
 def runStarGenome(fastq1, fastq2):
