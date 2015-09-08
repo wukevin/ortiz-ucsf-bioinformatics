@@ -25,6 +25,7 @@ import subprocess
 import sys
 import re
 import os
+import time
 
 def getToolFromFilename(f, delim = "_"):
     splitted = f.split(delim)
@@ -60,7 +61,7 @@ def runCuffDiff(*args):
     # Runs cuffdiff on the given gtf files, alternating using one as reference
     # and one as the query. Can handle either 2 or 3 .gtf files. Writes a log of
     # commands executed.
-    commandTemplate = "cuffcompare -s /media/Data/genomes/hg19_ordered/hg19.fa -o %s -r %s %s"
+    commandTemplate = "cuffcompare -s /media/rawData/genomes/GATK_hg19/hg19/ucsc.hg19.fasta -o %s -r %s %s"
     prefixTemplate = "%s_%s_vs_%s_ref"
     commands = []
     trackingFiles = []
@@ -166,6 +167,7 @@ def makeGtfFromIDs(cellLine, setOfIDs, sourceTools = ["Trinity", "Cufflinks", "S
                     f.write(line)
     f.close()
 
+startTime = time.time()
 print("Running CuffDiff...")
 trackingfiles = runCuffDiff(*sys.argv[1:])
 print("Parsing IDs from .tracking files...")
@@ -173,4 +175,5 @@ intersection = unionTrackingFiles(*trackingfiles)
 print("Making combined .gtf...")
 cellLine = getCellLineFromFilename(sys.argv[1])
 makeGtfFromIDs(cellLine, intersection)
-print("Done")
+deltaTime = time.time() - startTime
+print("Done in %s seconds" % (deltaTime))
