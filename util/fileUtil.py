@@ -7,6 +7,14 @@ Kevin Wu, Ortiz Lab, UCSF, August 2015
 """
 import gzip
 import re
+import glob
+
+def extractFromQuotes(x):
+    indices = [m.start() for m in re.finditer('"', x)]
+    if len(indices) == 1:
+        return x[indices[0]+1:]
+    else:
+        return x[indices[0]+1:indices[1]]
 
 def getCellLineFromFilename(f, delim = "_"):
     # Assumes that the cell line is the first part of the name
@@ -18,6 +26,12 @@ def getCellLineFromFilename(f, delim = "_"):
     else:
         line = splitted[0]
     return line
+
+def getBam(partialString):
+    """Returns the bam file that matches the partial name"""
+    for f in glob.glob('*.bam'):
+        if partialString in f:
+            return f
 
 def longestCommonSubstring(S, T):
     # http://www.bogotobogo.com/python/python_longest_common_substring_lcs_algorithm_generalized_suffix_tree.php
