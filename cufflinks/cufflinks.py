@@ -119,6 +119,8 @@ def aggregateCufflinksResults(mode, referenceGTF, outputFile = None):
         aggregatedResults[ID] = listOfFPKMS
 
     # Aggrgate and write the results
+    if outputFile == None:
+        outputFile = "aggregated_%s_results.txt" % mode
     output = open(outputFile, 'w')
     header = "%s\tSamples_Above_0.2\tPercent_Samples_Above_0.2\tAverage_FPKM\tMedian_FPKM\n"
     if mode == "genes":
