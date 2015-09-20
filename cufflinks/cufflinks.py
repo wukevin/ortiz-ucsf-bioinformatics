@@ -40,6 +40,8 @@ def readCufflinksIsoformsFPKM(filename):
     if "isoforms.fpkm_tracking" in filename:
         file = open(filename)
         for line in file:
+            if "tracking_id" == line[11]:
+                continue
             tokenized = line.rstrip().split('\t')
             tid = tokenized[0]
             gid = tokenized[3]
@@ -62,6 +64,8 @@ def readCufflinksGenesFPKM(filename):
     if "genes.fpkm_tracking" in filename:
         file = open(filename)
         for line in file:
+            if "tracking_id" == line[11]:
+                continue
             tokenized = line.rstrip().split('\t')
             tid = tokenized[0]
             gid = tokenized[3]
