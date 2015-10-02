@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Utility functions for interacting with the unix bash shell"""
 
 import sys, os
@@ -6,14 +7,25 @@ import subprocess
 import shlex
 
 def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutput = False):
+    def commandSplitHelper(c):
+        splitted = c.split()
+        program = splitted.pop(0)
+        args = " ".join(splitted)
+        args = " " + args
+        return [program, args]
     def execHelper(c, capture = captureOutput):
         if capture:
-            # splitted = shlex.split(c)
-            # result = subprocess.Popen(splitted, shell = True, stdout = subprocess.PIPE)
-            # out = result.communicate()[0]
-            out = subprocess.check_output(c,shell=True)
-            print(out)
-            return out#.upper()
+            splitted = shlex.split(c)
+            # splitted = commandSplitHelper(c)
+            # print(splitted)
+            result = subprocess.Popen(splitted, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+            out = result.communicate()
+            # print(out[0])
+            # print(out[1])
+            outJoined = "\n***Finished stdout, starting stderr***\n".join(out)
+            # out = subprocess.check_output(c,shell=True)
+            print(outJoined)
+            return outJoined
         else:
             subprocess.call(c, shell = True)
             return

@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import sys, subprocess
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import shellUtil as s
@@ -30,17 +31,19 @@ def runCufflinks(bamfileprefix, refGtf):
     if os.path.isfile(bamfile+".bai") == False:
         print("The bam does not have a index file. Generating one now...")
         s.executeFunctions("samtools index " + bamfile)
-    command = 'cufflinks -q -p 4 -o %s -G %s %s' % (bamfile + '_cufflinks', refGtf, bamfile)
+    s.executeFunctions("mkdir %s" % (bamfile + '_cufflinks'))
+    command = 'cufflinks --verbose -p 4 -o %s -G %s %s' % (bamfile + '_cufflinks', refGtf, bamfile)
     print(command)
     startTime = time.time()
     result = s.executeFunctions(command, captureOutput = True)
-    resultFile = open(bamfile + '_cufflinks/log.txt')
+    resultFile = open(bamfile + '_cufflinks/log.txt', mode = 'w')
     resultFile.write(result)
     resultFile.close()
     print("Finished cufflinks run in %s seconds" % (time.time()-startTime))
     return result
 
 def runCufflinksWrapper(tupleOfArgs):
+	print(tupleOfArgs)
 	return runCufflinks(tupleOfArgs[0], tupleOfArgs[1])
 
 from multiprocessing import Pool as ThreadPool
@@ -70,7 +73,7 @@ else:
 	# Generate input tuples for pool.map
 	inTup = []
 	for f in filePrefixes:
-		inTup.append([f,referenceGtf])
+		inTup.append((f,referenceGtf))
 	pool.map(runCufflinksWrapper, inTup)
 
 
