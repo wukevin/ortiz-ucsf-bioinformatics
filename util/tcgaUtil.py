@@ -5,11 +5,14 @@ def getPrefixForIDs(ids, idmapfile = '/media/rawData/TCGA_SKCM/ids_to_filename.t
 	idDict = dict()
 	idmap = open(idmapfile, mode = 'r')
 	for line in idmap:
-		parsed = l.split()
+		parsed = line.split()
 		idDict[parsed[0]] = parsed[1]
 		# Stored as TCGA-XX-XXXX filenameprefix
-	idsList = ids.split()
+	if isinstance(ids, str):
+		ids = ids.split()
 	prefixes = []
-	for i in idsList:
+	# print(ids)
+	for i in ids:
+		# print(i)
 		prefixes.append(idDict[i])
 	return prefixes
