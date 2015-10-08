@@ -21,9 +21,9 @@ def htseqWrapper(bamfile, refGtf):
 	results = s.executeFunctions(outName, captureOutput = True)
 	logName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.log"
 	# Write to log file
-	f = open(logName, mode = 'w')
-	f.write(results)
-	f.close()
+	logFile = open(logName, mode = 'w')
+	logFile.write(results)
+	logFile.close()
 
 def htseqOneArg(tupleOfArgs):
 	htseqWrapper(tupleOfArgs[0], tupleOfArgs[1])
