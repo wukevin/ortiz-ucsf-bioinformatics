@@ -58,10 +58,12 @@ def stripKnownFileExtensions(filename):
                            "\.gz",
                            "\.zip",
                            "\.fastq",
-                           "\.fasta"]
+                           "\.fasta",
+                           "\.bam"]
     for ext in knownFileExtensions:
-        re.sub(ext, '', filename)
-    return filename
+        # print(ext)
+        f = re.sub(ext, '', filename)
+    return f
 
 def meanFastqReadLength(filename):
     # Gets the average read length from a fastq file (gzipped or not works)
