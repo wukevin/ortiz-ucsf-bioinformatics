@@ -18,12 +18,12 @@ def htseqWrapper(bamfile, refGtf):
 	# htseq-count --format=bam --stranded=no [STAR Bam File] [Reference.gtf] > [OutputName.txt]
 	outName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.txt"
 	command = "htseq-count --format=bam --stranded=no %s %s > %s" % (bamfile, refGtf, outName)
-	results = s.executeFunctions(command, captureOutput = True)
-	logName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.log"
+	results = s.executeFunctions(command)
+	# logName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.log"
 	# Write to log file
-	logFile = open(logName, mode = 'w')
-	logFile.write(results)
-	logFile.close()
+	# logFile = open(logName, mode = 'w')
+	# logFile.write(results)
+	# logFile.close()
 
 def htseqOneArg(tupleOfArgs):
 	htseqWrapper(tupleOfArgs[0], tupleOfArgs[1])
