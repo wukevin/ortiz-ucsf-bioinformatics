@@ -18,7 +18,7 @@ def htseqWrapper(bamfile, refGtf):
 	# htseq-count --format=bam --stranded=no [STAR Bam File] [Reference.gtf] > [OutputName.txt]
 	outName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.txt"
 	command = "htseq-count --format=bam --stranded=no %s %s > %s" % (bamfile, refGtf, outName)
-	results = s.executeFunctions(outName, captureOutput = True)
+	results = s.executeFunctions(command, captureOutput = True)
 	logName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.log"
 	# Write to log file
 	logFile = open(logName, mode = 'w')
