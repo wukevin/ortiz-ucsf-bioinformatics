@@ -42,14 +42,12 @@ if s.isStdInEmpty():
 	if len(arguments) != 3:
 		print("Incorrect number of arguments")
 		print(helpDoc)
-		return
 	else:
 		if arguments[0] == "--referenceGtf" and 'gtf' in arguments[1] and 'bam' in arguments[3]:
 			htseqWrapper(arguments[1], arguments[2])
 		else:
 			print("Wrong arguments")
 			print(helpDoc)
-			return
 else:
 	STDIN = s.getStdIn()
 	if arguments[0] == "--referenceGtf" and gtf in arguments[1]:
@@ -57,4 +55,3 @@ else:
 	else:
 		print("Incorrect usage.")
 		print(helpDoc)
-		return
