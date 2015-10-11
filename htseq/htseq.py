@@ -50,7 +50,7 @@ if s.isStdInEmpty():
 			print(helpDoc)
 else:
 	STDIN = s.getStdIn()
-	if arguments[0] == "--referenceGtf" and gtf in arguments[1]:
+	if arguments[0] == "--referenceGtf" and 'gtf' in arguments[1]:
 		htseqParallel(STDIN, arguments[1])
 	else:
 		print("Incorrect usage.")
