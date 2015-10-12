@@ -28,7 +28,7 @@ import shellUtil as s
 def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/STAR_genomeDir_hg19_vGATK", cpu = 16):
 	# Runs STAR to output a coordinate soorted BAM file that is compatible with cuff
 	lcs = f.stripKnownFileExtensions(fastq1)
-	lcs = f[:-2]
+	lcs = lcs[:-2]
 	if fastq2 != None:
 		lcs = f.longestCommonSubstring(fastq1, fastq2) # lcs = longest common substring
 	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s"
