@@ -71,7 +71,7 @@ for x in pairFiles:
     s.executeFunctions("rm *.fastq")
 
 for x in singleFiles:
-    extractCommand = "zcat %s.gz" % (x)
+    extractCommand = "zcat %s.gz > %s" % (x, x)
     print("Extracting fastq files...")
     s.executeFunctions(extractCommand)
     print("Running STAR...")
