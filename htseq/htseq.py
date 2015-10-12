@@ -12,6 +12,9 @@ ls *.bam | python htseq.py --referenceGtf xxx.gtf
 OR
 python htseq.py --referenceGtf xxx.gtf yyy.bam
 
+Note that HTSeq requires input BAM files to be sorted by NAME. If running on
+STAR's output, and the output is already sorted by STAR, we do not need to
+further sort it.
 Written by Kevin Wu - Ortiz Lab - October 2015"""
 
 def htseqWrapper(bamfile, refGtf):

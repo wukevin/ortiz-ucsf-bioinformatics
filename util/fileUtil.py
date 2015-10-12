@@ -8,6 +8,7 @@ Kevin Wu, Ortiz Lab, UCSF, August 2015
 import gzip
 import re
 import glob
+import os
 
 def extractFromQuotes(x):
     indices = [m.start() for m in re.finditer('"', x)]
@@ -54,16 +55,28 @@ def longestCommonSubstring(S, T):
     return lcs_set.pop()
 
 def stripKnownFileExtensions(filename):
-    knownFileExtensions = ["\.tar",
-                           "\.gz",
-                           "\.zip",
-                           "\.fastq",
-                           "\.fasta",
-                           "\.bam"]
+    knownFileExtensions = ["\.tar$",
+                           "\.gz$",
+                           "\.zip$",
+                           "\.fastq$",
+                           "\.fasta$",
+                           "\.bam$",
+                           "\.fastq\.gz$"]
     for ext in knownFileExtensions:
         # print(ext)
-        f = re.sub(ext, '', filename)
-    return f
+        filename = re.sub(ext, '', filename)
+    return filename
+
+def getFastqPairs():
+    fastqFiles = glob.glob("*.fastq*")
+    fastqFilesBase = [stripKnownFileExtensions(x) for x in fastqFiles]
+    fastqFilesBase = set([x.rstrip("_12") for x in fastqFilesBase]) # remove the _1 or _2
+    result = []
+    for base in fastqFilesBase:
+        files = glob.glob(base + "*")
+        result.append(files)
+    return result
+
 
 def meanFastqReadLength(filename):
     # Gets the average read length from a fastq file (gzipped or not works)

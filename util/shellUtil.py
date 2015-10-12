@@ -3,8 +3,9 @@
 
 import sys, os
 import select
-import subprocess
+import subprocess, multiprocessing
 import shlex
+import numpy as np
 
 def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutput = False):
     def commandSplitHelper(c):
@@ -70,3 +71,10 @@ def getStdIn():
         line = line.rstrip()
         processed.append(line)
     return processed
+
+def getAvailableThreads():
+    # Gets the number of threads that aren't currently active
+    totalThreads = multiprocessing.cpu_count()
+    currLoadAverage = os.getloadavg()[2]
+    availableThreads = np.floor(totalThreads - currLoadAverage)
+    return availableThreads
