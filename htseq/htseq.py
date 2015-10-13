@@ -20,7 +20,7 @@ Written by Kevin Wu - Ortiz Lab - October 2015"""
 def htseqWrapper(bamfile, refGtf):
 	# htseq-count --format=bam --stranded=no [STAR Bam File] [Reference.gtf] > [OutputName.txt]
 	outName = f.stripKnownFileExtensions(bamfile) + ".htseq-count.txt"
-	if os.path.isfile(outname): # If the output txt already exists, don't recompute it
+	if os.path.isfile(outName): # If the output txt already exists, don't recompute it
 		return None
 	command = "htseq-count --format=bam --stranded=no %s %s > %s" % (bamfile, refGtf, outName)
 	results = s.executeFunctions(command)
