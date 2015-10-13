@@ -13,7 +13,5 @@ python aggregateHtseqCount.py *.txt
 """
 
 args = sys.argv[1:]
-assert len(args) == 1
 
-files = glob.glob(args[0])
-h.aggregateHtseqCountResults(files)
+h.aggregateHtseqCountResults(args)
