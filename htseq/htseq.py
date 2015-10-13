@@ -40,6 +40,56 @@ def htseqParallel(listOfBams, referenceGtf, threadCount = 4):
 		inputArgsList.append([bam, referenceGtf])
 	pool.map(htseqOneArg, inputArgsList)
 
+def readHtseqCountResult(file):
+	"""Returns a dictionary where keys are genes, values are counts in that result"""
+	output = {}
+	f = open(file)
+	if ".htseq-count.txt" not in file:
+		print("WARNING: The file supplied may not be a htseq count result file")
+	for line in f:
+		if line.startswith("_"):
+			continue
+		splitted = line.split('\t')
+		output[splitted[0]] = int(splitted[1])
+	f.close()
+	return output
+
+def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_htseq_table.csv', sumamryOutFile = 'aggregated_htseq_summary.csv'):
+	# pool = ThreadPool(4)
+	# listOfDict = pool.map(readHtseqCountResult, listOfResultFiles)
+	allResults = {} # Dict of dicts. First index by filename, then by gene
+	for result in listOfResultFiles:
+		allResults[result] = readHtseqCountResult(result)
+	allGenes = [x for x in allResults[listOfResultFiles[0]]]
+	table = {} # Each entry in this dict is a gene, followed by a list of values
+	for gene in allGenes: # initialize the table
+		table[gene] = []
+	for gene in allGenes:
+		print("Aggregating counts for %s" % (gene))
+		for result in listOfResultFiles:
+			resultDict = allResults[result]
+			table[gene].append(resultDict[gene])
+	x = open(tableOutFile, 'w')
+	header = 'genes,' + ','.join(listOfResultFiles + "\n")
+	x.write(header)
+	for gene in allGenes:
+		dataInCsv = ','.join(table[gene])
+		lineToWrite = gene + ',' + dataInCsv + "\n"
+		x.write(lineToWrite)
+	x.close()
+
+	y = open(sumamryOutFile, 'w')
+	header = 'genes,mean,sd,median,max,min\n'
+	y.write(header)
+	for gene in allGenes:
+		data = [allResults[x][gene] for x in listOfResultFiles]
+		avg = np.mean(data)
+		std = np.std(data)
+		med = np.median(data)
+		lineToWrite = "%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data))
+		y.write(line0)
+	y.close()
+
 # arguments = sys.argv[1:]
 
 # if s.isStdInEmpty():
