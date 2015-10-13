@@ -1,4 +1,4 @@
-import sys, subprocess
+import sys, subprocess, os
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
