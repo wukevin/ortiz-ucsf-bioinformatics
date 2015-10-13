@@ -57,6 +57,7 @@ def readHtseqCountResult(file):
 def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_htseq_table.csv', sumamryOutFile = 'aggregated_htseq_summary.csv'):
 	# pool = ThreadPool(4)
 	# listOfDict = pool.map(readHtseqCountResult, listOfResultFiles)
+	print("Reading in results")
 	allResults = {} # Dict of dicts. First index by filename, then by gene
 	for result in listOfResultFiles:
 		allResults[result] = readHtseqCountResult(result)
@@ -64,20 +65,21 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 	table = {} # Each entry in this dict is a gene, followed by a list of values
 	for gene in allGenes: # initialize the table
 		table[gene] = []
+	print("Aggregating results")
 	for gene in allGenes:
-		print("Aggregating counts for %s" % (gene))
+		# print("Aggregating counts for %s" % (gene))
 		for result in listOfResultFiles:
 			resultDict = allResults[result]
 			table[gene].append(resultDict[gene])
 	x = open(tableOutFile, 'w')
-	header = 'genes,' + ','.join(listOfResultFiles + "\n")
+	header = 'genes,' + ','.join(listOfResultFiles) + "\n"
 	x.write(header)
 	for gene in allGenes:
 		dataInCsv = ','.join(table[gene])
 		lineToWrite = gene + ',' + dataInCsv + "\n"
 		x.write(lineToWrite)
 	x.close()
-
+	print("Computing summary statistics")
 	y = open(sumamryOutFile, 'w')
 	header = 'genes,mean,sd,median,max,min\n'
 	y.write(header)
