@@ -76,7 +76,8 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 	header = 'genes,' + ','.join(listOfResultFiles) + "\n"
 	x.write(header)
 	for gene in allGenes:
-		dataInCsv = ','.join(table[gene])
+		stringified = [str(g) for g in table[gene]]
+		dataInCsv = ','.join(stringified)
 		lineToWrite = gene + ',' + dataInCsv + "\n"
 		x.write(lineToWrite)
 	x.close()
@@ -90,7 +91,7 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 		std = np.std(data)
 		med = np.median(data)
 		lineToWrite = "%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data))
-		y.write(line0)
+		y.write(lineToWrite)
 	y.close()
 
 # arguments = sys.argv[1:]
