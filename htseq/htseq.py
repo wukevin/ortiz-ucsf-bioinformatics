@@ -70,7 +70,8 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 		# print("Aggregating counts for %s" % (gene))
 		for result in listOfResultFiles:
 			resultDict = allResults[result]
-			table[gene].append(resultDict[gene])
+			table[gene].append(int(resultDict[gene]))
+		assert len(table[gene]) == len(listOfResultFiles)
 	x = open(tableOutFile, 'w')
 	header = 'genes,' + ','.join(listOfResultFiles) + "\n"
 	x.write(header)
