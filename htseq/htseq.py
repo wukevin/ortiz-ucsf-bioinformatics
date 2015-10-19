@@ -91,7 +91,8 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 	header = 'genes,mean,sd,median,max,min\n'
 	y.write(header)
 	for gene in allGenes:
-		data = [allResults[x][gene] for x in listOfResultFiles]
+		# data = [allResults[x][gene] for x in listOfResultFiles]
+		data = table[gene]
 		avg = np.mean(data)
 		std = np.std(data)
 		med = np.median(data)
