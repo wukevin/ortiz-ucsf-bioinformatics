@@ -99,7 +99,7 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 		avg = np.mean(data)
 		std = np.std(data)
 		med = np.median(data)
-		lineToWrite = "%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data), numMissing)
+		lineToWrite = "%s,%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data), numMissing)
 		y.write(lineToWrite)
 	y.close()
 
