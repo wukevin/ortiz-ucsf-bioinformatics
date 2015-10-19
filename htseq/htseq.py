@@ -74,7 +74,7 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 				thisGeneVal = int(resultDict[gene])
 			except KeyError:
 				print("Caution: %s not found in result file %s" % (gene, result))
-				thisGeneVal = 0
+				thisGeneVal = -1
 			table[gene].append(thisGeneVal)
 		assert len(table[gene]) == len(listOfResultFiles)
 	x = open(tableOutFile, 'w')
@@ -88,15 +88,18 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 	x.close()
 	print("Computing summary statistics")
 	y = open(sumamryOutFile, 'w')
-	header = 'genes,mean,sd,median,max,min\n'
+	header = 'genes,mean,sd,median,max,min,numMissingValues\n'
 	y.write(header)
 	for gene in allGenes:
 		# data = [allResults[x][gene] for x in listOfResultFiles]
 		data = table[gene]
+		ogLength = len(data)
+		data = [x for x in data if x > -1] # Filter out -1 values
+		numMissing = len(data) - ogLength
 		avg = np.mean(data)
 		std = np.std(data)
 		med = np.median(data)
-		lineToWrite = "%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data))
+		lineToWrite = "%s,%s,%s,%s,%s,%s\n" % (gene, avg, std, med, max(data), min(data), numMissing)
 		y.write(lineToWrite)
 	y.close()
 
