@@ -2,7 +2,6 @@ import os, sys, getopt
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
-import time, pretty
 
 helpDoc = """
 
@@ -21,6 +20,7 @@ def executeTrinityFastq(fastq1, fastq2):
 	if 'gz' in fastq1 and 'gz' in fastq2:
 		extracting = True
 	if extracting is True:
+		print("Extracting files")
 		f.extractGz([fastq1, fastq2])
 		fastq1 = fastq1[:-3]
 		fastq2 = fastq2[:-3]
@@ -67,8 +67,8 @@ def main():
 				x, y = pair[0], pair[1]
 			else:
 				x, y = pair[1], pair[0]
-			print("Running trinity on %s and %s at %s." % (x, y, pretty.date(time.time())))
-			executeTrinityFastq(x,y)	
+			print("Running trinity on %s and %s" % (x,y)
+			executeTrinityFastq(x,y)
 
 if __name__ == "__main__":
     main()
