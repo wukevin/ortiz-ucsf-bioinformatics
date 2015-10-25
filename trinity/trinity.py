@@ -14,7 +14,7 @@ def executeTrinityGenomeGuided(bamfile):
 	template = "trinity --genome_guided_bam %s --genome_guided_max_intron 11000 --max_memory 54G --CPU 16 --output %s" % (bamfile, outputFolder)
 	s.executeFunctions(template)
 
-def executeTrinityFastq(fastq1, fastq2):
+def executeTrinityFastq(fastq1, fastq2, n):
 	extracting = False
 	# If in gz format, extract such that trintiy can run on it
 	if 'gz' in fastq1 and 'gz' in fastq2:
@@ -30,16 +30,14 @@ def executeTrinityFastq(fastq1, fastq2):
 	assert '_2' in fastq2
 	# Run trinity
 	lcs = f.longestCommonSubstring(fastq1, fastq2)
-	if lcs[-1] == '_':
-		lcs = lcs[:-1]
 	# outputFolder = lcs + '_trinity_Out'
-	outputFolder = lcs
+	outputFolder = lcs + '_trinity_out'
 	# logfile = outputFolder + '/trinity.log'
-	logfile = outputFolder + ".Trinity.log"
-	template = 'trinity --seqType fq --full_cleanup --verbose --left %s --right %s --max_memory 54G --CPU 16 --output %s' % (fastq1, fastq2, outputFolder)
+	logfile = lcs + ".Trinity.log"
+	template = 'trinity --seqType fq --full_cleanup --verbose --left %s --right %s --max_memory 54G --CPU %s --output %s' % (fastq1, fastq2, n, outputFolder)
 	result = s.executeFunctions(template, captureOutput = True)
 	# Write console log to logfile
-	file = open(logfile)
+	file = open(logfile, mode = 'w')
 	file.write(result)
 	file.close()
 	# if we extracted earlier, remove the extracted fastq files to save sapce
@@ -48,13 +46,15 @@ def executeTrinityFastq(fastq1, fastq2):
 		s.executeFunctions('rm ' + fastq2)
 
 def main():
+	# Get options
 	try:
-		optlist, args = getopt.getopt(args = sys.argv[1:], shortopts = None, longopts = ['all-files', 'genome-guided'])
+		optlist, args = getopt.getopt(args = sys.argv[1:], shortopts = None, longopts = ['all-files', 'genome-guided', 'cpu='])
 	except getopt.GetoptError as err:
 		print(err)
 		sys.exit(2)
 	runAll = False
 	fq = True
+	threadCount = 16 # Default to 16 threads
 	files = []
 	# Walk thorugh given options
 	for o, a in optlist:
@@ -62,8 +62,11 @@ def main():
 			runAll = True
 		elif o == '--genome-guided':
 			fq = False
+		if o == '--cpu':
+			threadCount = a
 
 	# Caution: this section is not 100% done. Only enough to run what I need right now.
+	# Run the wrappers
 	if runAll is True:
 		assert len(args) == 0
 		pairs = f.getFastqPairs()
@@ -76,7 +79,7 @@ def main():
 			else:
 				x, y = pair[1], pair[0]
 			print("Running trinity on\n%s\n%s" % (x,y))
-			executeTrinityFastq(x,y)
+			executeTrinityFastq(x,y, threadCount)
 
 if __name__ == "__main__":
     main()

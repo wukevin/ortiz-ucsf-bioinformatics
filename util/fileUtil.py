@@ -52,6 +52,10 @@ def longestCommonSubstring(S, T):
                     lcs_set.add(S[i-c+1:i+1])
                 elif c == longest:
                     lcs_set.add(S[i-c+1:i+1])
+    lcs = lcs_set.pop()
+    # Trim trailing underscore
+    if lcs[-1] == '_':
+        lcs = lcs[:-1]
     return lcs_set.pop()
 
 def stripKnownFileExtensions(filename):
