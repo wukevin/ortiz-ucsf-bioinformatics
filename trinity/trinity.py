@@ -67,7 +67,7 @@ def main():
 				x, y = pair[0], pair[1]
 			else:
 				x, y = pair[1], pair[0]
-			print("Running trinity on %s and %s" % (x,y)
+			print("Running trinity on %s and %s" % (x,y))
 			executeTrinityFastq(x,y)
 
 if __name__ == "__main__":
