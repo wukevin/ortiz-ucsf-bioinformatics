@@ -66,9 +66,9 @@ def extractGz(listOfFiles, numThreads = 2):
         stripped = file[:-3]
         command = 'zcat %s > %s' % (file, stripped)
         executeFunctions(command)
-
-    pool = multiprocessing.Pool(numThreads)
-    pool.apply(extractHelper, listOfFiles)
+    # No longer multhreaded
+    for file in listOfFiles:
+        extractHelper(file)
 
 def isStdInEmpty():
     # WARNING: This only works on Unix systems!
