@@ -43,8 +43,12 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutp
         return execHelper(listOfFunc)
     else: # Is actually a list of functions, and treat as such
         if parallel: # Runs each command as a background process, effectively parallelizing
-            sep = " & "
-            listOfFunc.append("wait") # Prevents premature termination in shell
+            # sep = " & "
+            # listOfFunc.append("wait") # Prevents premature termination in shell
+            if isinstance(parallel, bool): # If just boolean, we just set thread count to 4
+                parallel = 4
+            pool = multiprocessing.Pool(parallel)
+            pool.apply(execHelper, listOfFunc)
         else: # Runs each command as foreground sequentially
             sep = " && "
         command = sep.join(listOfFunc)
@@ -54,6 +58,17 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutp
             return
         else:
             return execHelper(command)
+
+def extractGz(listOfFiles, numThreads = 2):
+    def extractHelper(file):
+        assert 'gz' in file
+        extension = splitted = file.split('.')[-1]
+        stripped = file[:-3]
+        command = 'zcat %s > %s' % (file, stripped)
+        executeFunctions(command)
+
+    pool = multiprocessing.Pool(numThreads)
+    pool.apply(extractHelper, listOfFiles)
 
 def isStdInEmpty():
     # WARNING: This only works on Unix systems!
