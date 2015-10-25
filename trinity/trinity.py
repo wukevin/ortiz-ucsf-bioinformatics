@@ -21,7 +21,7 @@ def executeTrinityFastq(fastq1, fastq2):
 		extracting = True
 	if extracting is True:
 		print("Extracting files")
-		f.extractGz([fastq1, fastq2])
+		s.extractGz([fastq1, fastq2])
 		fastq1 = fastq1[:-3]
 		fastq2 = fastq2[:-3]
 	# Run trinity
