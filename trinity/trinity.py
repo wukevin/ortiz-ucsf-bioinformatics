@@ -32,7 +32,7 @@ def executeTrinityFastq(fastq1, fastq2):
 	lcs = f.longestCommonSubstring(fastq1, fastq2)
 	outputFolder = lcs + '_trinity_Out'
 	logfile = outputFolder + '/trinity.log'
-	template = 'trinity --left %s --right %s --max_memory 54G --CPU 16 --output %s' % (fastq1, fastq2, outputFolder)
+	template = 'trinity --seqType fq --left %s --right %s --max_memory 54G --CPU 16 --output %s' % (fastq1, fastq2, outputFolder)
 	result = s.executeFunctions(template, captureOutput = True)
 	# Write console log to logfile
 	file = open(logfile)
