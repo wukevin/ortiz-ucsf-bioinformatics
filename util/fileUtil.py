@@ -56,7 +56,7 @@ def longestCommonSubstring(S, T):
     # Trim trailing underscore
     if lcs[-1] == '_':
         lcs = lcs[:-1]
-    return lcs_set.pop()
+    return lcs
 
 def stripKnownFileExtensions(filename):
     knownFileExtensions = ["\.tar$",
