@@ -30,8 +30,12 @@ def executeTrinityFastq(fastq1, fastq2):
 	assert '_2' in fastq2
 	# Run trinity
 	lcs = f.longestCommonSubstring(fastq1, fastq2)
-	outputFolder = lcs + '_trinity_Out'
-	logfile = outputFolder + '/trinity.log'
+	if lcs[-1] == '_':
+		lcs = lcs[:-1]
+	# outputFolder = lcs + '_trinity_Out'
+	outputFolder = lcs
+	# logfile = outputFolder + '/trinity.log'
+	logfile = outputFolder + ".Trinity.log"
 	template = 'trinity --seqType fq --full_cleanup --verbose --left %s --right %s --max_memory 54G --CPU 16 --output %s' % (fastq1, fastq2, outputFolder)
 	result = s.executeFunctions(template, captureOutput = True)
 	# Write console log to logfile
