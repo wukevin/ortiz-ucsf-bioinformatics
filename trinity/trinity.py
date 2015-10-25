@@ -2,7 +2,7 @@ import os, sys, getopt
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
-import time
+import time, pretty
 
 helpDoc = """
 
@@ -31,9 +31,9 @@ def executeTrinityFastq(fastq1, fastq2):
 	template = 'trinity --left %s --right %s --max_memory 54G --CPU 16 --output %s' % (fastq1, fastq2, outputFolder)
 	result = s.executeFunctions(template, captureOutput = True)
 	# Write console log to logfile
-	f = open(logfile)
-	f.write(result)
-	f.close()
+	file = open(logfile)
+	file.write(result)
+	file.close()
 	# if we extracted earlier, remove the extracted fastq files to save sapce
 	if extracting:
 		s.executeFunctions('rm ' + fastq1)
@@ -67,7 +67,7 @@ def main():
 				x, y = pair[0], pair[1]
 			else:
 				x, y = pair[1], pair[0]
-			print("Running trinity on %s and %s at %s." % (x, y, time.time()))
+			print("Running trinity on %s and %s at %s." % (x, y, pretty.date(time.time())))
 			executeTrinityFastq(x,y)	
 
 if __name__ == "__main__":
