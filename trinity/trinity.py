@@ -24,6 +24,10 @@ def executeTrinityFastq(fastq1, fastq2):
 		s.extractGz([fastq1, fastq2])
 		fastq1 = fastq1[:-3]
 		fastq2 = fastq2[:-3]
+		print("Finished extraction. Set new file pointers to %s and %s" % (fastq1,fastq2))
+	# Sanity test
+	assert '_1' in fastq1
+	assert '_2' in fastq2
 	# Run trinity
 	lcs = f.longestCommonSubstring(fastq1, fastq2)
 	outputFolder = lcs + '_trinity_Out'
