@@ -77,8 +77,8 @@ def getFastqGzPairs():
     fastqFilesBase = set([x.rstrip("_12") for x in fastqFilesBase]) # remove the _1 or _2
     result = []
     for base in fastqFilesBase:
-        file1 = glob.glob(base + "_1.fastq.gz")
-        file2 = glob.glob(base + "_2.fastq.gz")
+        file1 = glob.glob(base + "_1.fastq.gz")[0]
+        file2 = glob.glob(base + "_2.fastq.gz")[0]
         x = (file1,file2)
         result.append(x)
     return result
