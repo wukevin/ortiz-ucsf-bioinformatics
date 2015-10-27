@@ -79,7 +79,8 @@ def getFastqGzPairs():
     for base in fastqFilesBase:
         file1 = glob.glob(base + "_1.fastq.gz")
         file2 = glob.glob(base + "_2.fastq.gz")
-        result.append([file1,file2])
+        x = (file1,file2)
+        result.append(x)
     return result
 
 
