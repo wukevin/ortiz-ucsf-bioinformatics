@@ -71,14 +71,15 @@ def stripKnownFileExtensions(filename):
         filename = re.sub(ext, '', filename)
     return filename
 
-def getFastqPairs():
+def getFastqGzPairs():
     fastqFiles = glob.glob("*.fastq*")
     fastqFilesBase = [stripKnownFileExtensions(x) for x in fastqFiles]
     fastqFilesBase = set([x.rstrip("_12") for x in fastqFilesBase]) # remove the _1 or _2
     result = []
     for base in fastqFilesBase:
-        files = glob.glob(base + "*.fastq")
-        result.append(files)
+        file1 = glob.glob(base + "_1.fastq.gz")
+        file2 = glob.glob(base + "_2.fastq.gz")
+        result.append([file1,file2])
     return result
 
 

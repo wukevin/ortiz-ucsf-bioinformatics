@@ -81,7 +81,7 @@ def main():
     # Run the wrappers
     if runAll is True:
         assert len(args) == 0
-        pairs = f.getFastqPairs()
+        pairs = f.getFastqGzPairs()
         # Walk through every pair in this dir
         for pair in pairs:
             print(pair)
