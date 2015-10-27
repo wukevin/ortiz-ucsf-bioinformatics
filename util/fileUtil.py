@@ -81,7 +81,7 @@ def getFastqGzPairs():
         file2 = glob.glob(base + "_2.fastq.gz")
         if len(file1) == 1 and len(file2) == 1:
             x = (file1[0],file2[0])
-            print(x)
+            # print(x)
             result.append(x)
     return result
 
