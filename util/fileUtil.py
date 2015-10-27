@@ -77,7 +77,7 @@ def getFastqPairs():
     fastqFilesBase = set([x.rstrip("_12") for x in fastqFilesBase]) # remove the _1 or _2
     result = []
     for base in fastqFilesBase:
-        files = glob.glob(base + "*")
+        files = glob.glob(base + "*.fastq")
         result.append(files)
     return result
 
