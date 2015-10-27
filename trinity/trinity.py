@@ -18,7 +18,7 @@ def executeTrinityGenomeGuided(bamfile):
     s.executeFunctions(template)
 
 
-def executeTrinityFastq(fastq1, fastq2, n):
+def executeTrinityFastq(fastq1, fastq2, n, rerun = False):
     extracting = False
     # If in gz format, extract such that trintiy can run on it
     if 'gz' in fastq1 and 'gz' in fastq2:
@@ -37,6 +37,10 @@ def executeTrinityFastq(fastq1, fastq2, n):
     lcs = f.longestCommonSubstring(fastq1, fastq2)
     # outputFolder = lcs + '_trinity_Out'
     outputFolder = lcs + '_trinity_out'
+    # Check if result already exists; if so, don't rerun
+    if rerun == False and os.path.isfile(outputFolder + '.Trinity.fasta'):
+        print(outputFolder + '.Trinity.fasta already exists. Not rerunning.' )
+        return None
     # logfile = outputFolder + '/trinity.log'
     logfile = lcs + ".Trinity.log"
     template = 'trinity --seqType fq --full_cleanup --verbose --left %s --right %s --max_memory 54G --CPU %s --output %s' % (
@@ -80,6 +84,7 @@ def main():
         pairs = f.getFastqPairs()
         # Walk through every pair in this dir
         for pair in pairs:
+            print(pair)
             assert len(pair) == 2
             x, y = None, None
             if "_1" in pair[0]:
