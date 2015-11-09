@@ -38,4 +38,4 @@ def downloadFromAnalysisID(analysis_id, keyFile="/media/Data2/TCGA_SKCM/cghub.ke
 def queryAndDownload(queryString, keyfile):
     queryCommand = 'cgquery -o temp.xml "%s"' % (queryString)
     s.executeFunctions(queryCommand)
-    downloadCommand = 'gtdownload -vv -c %s -d temp.xml' %s (keyFile)
+    downloadCommand = 'gtdownload -vv -c %s -d temp.xml' %s (keyfile)
