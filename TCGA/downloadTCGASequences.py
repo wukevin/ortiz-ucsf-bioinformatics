@@ -25,12 +25,17 @@ def downloadFromAnalysisID(analysis_id, keyFile="/media/Data2/TCGA_SKCM/cghub.ke
     print(command)
     # s.executeFunctions(command, simulate = True, captureOutput = False)
 
-if (s.isStdInEmpty()):
-    if len(sys.argv) < 2:
-        print("You need to input something.")
-else:
-    stdin = s.getStdIn()
-    for x in stdin:
-        ids = getAnalysisIDs(x)
-        for y in ids:
-            downloadFromAnalysisID(y)
+# if (s.isStdInEmpty()):
+#     if len(sys.argv) < 2:
+#         print("You need to input something.")
+# else:
+#     stdin = s.getStdIn()
+#     for x in stdin:
+#         ids = getAnalysisIDs(x)
+#         for y in ids:
+#             downloadFromAnalysisID(y)
+
+def queryAndDownload(queryString, keyfile):
+    queryCommand = 'cgquery -o temp.xml "%s"' % (queryString)
+    s.executeFunctions(queryCommand)
+    downloadCommand = 'gtdownload -vv -c %s -d temp.xml' %s (keyFile)
