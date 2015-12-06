@@ -9,6 +9,8 @@ import time
 import glob
 from multiprocessing import Pool as ThreadPool
 import getopt
+import string
+import os
 
 helpDoc = """
 """
@@ -28,13 +30,16 @@ helpDoc = """
 # for l in desiredIDsFile:
     # desiredIDs.append(idDict[l.strip()])
 # print(desiredIDs)
-def runCufflinks(bamfileprefix, refGtf):
-    bamfile = f.getBam(bamfileprefix)# bamfileprefix + "_Aligned.sortedByCoord.out.bam"
+def runCufflinks(bamfile, refGtf):
+    bamfileStripped = string.replace(bamfile, '_Aligned.sortedByCoord.out.bam', '')
+    outputFolder = bamfileStripped + '_cufflinks'
+    # if os.path.exists(outputFolder):
+    #     print("")
     if os.path.isfile(bamfile+".bai") == False:
         print("The bam does not have a index file. Generating one now...")
         s.executeFunctions("samtools index " + bamfile)
     s.executeFunctions("mkdir %s" % (bamfile + '_cufflinks'))
-    command = 'cufflinks --verbose -p 4 -o %s -G %s %s' % (bamfile + '_cufflinks', refGtf, bamfile)
+    command = 'cufflinks --verbose -p 4 -o %s -G %s %s' % (outputFolder, refGtf, bamfile)
     print(command)
     startTime = time.time()
     result = s.executeFunctions(command, captureOutput = True)
