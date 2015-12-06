@@ -8,6 +8,7 @@ import os
 import time
 import glob
 from multiprocessing import Pool as ThreadPool
+import getopt
 
 helpDoc = """
 """
