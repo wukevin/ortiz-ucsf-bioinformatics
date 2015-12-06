@@ -7,6 +7,7 @@ import fileUtil as f
 import os
 import time
 import glob
+from multiprocessing import Pool as ThreadPool
 
 helpDoc = """
 """
@@ -43,11 +44,9 @@ def runCufflinks(bamfileprefix, refGtf):
     return result
 
 def runCufflinksWrapper(tupleOfArgs):
-	print(tupleOfArgs)
-	return runCufflinks(tupleOfArgs[0], tupleOfArgs[1])
+    print(tupleOfArgs)
+    return runCufflinks(tupleOfArgs[0], tupleOfArgs[1])
 
-from multiprocessing import Pool as ThreadPool
-pool = ThreadPool(4)
 # results = pool.map(runCufflinks, desiredIDs)
 
 #for id in desiredIDs:
@@ -56,25 +55,49 @@ pool = ThreadPool(4)
 #    if os.path.exists(foldername):
 #        continue
 #    print(foldername)
+def main():
+    # if s.isStdInEmpty():
+    #     # Process command line args
+    #     print("No StdIn")
+    #     print(helpDoc)
+    # elif len(sys.argv) != 3:
+    #     print("Incorrect number of arguments")
+    #     print(helpDoc)
+    # else:
+    #     referenceGtf = ''
+    #     if len(sys.argv) == 3 and sys.argv[1] == '--referenceGtf':
+    #         referenceGtf = sys.argv[2]
+    #     stdin = s.getStdIn()
+    #     filePrefixes = t.getPrefixForIDs(stdin)
+    #     # Generate input tuples for pool.map
+    #     inTup = []
+    #     for f in filePrefixes:
+    #         inTup.append((f,referenceGtf))
+    #     pool.map(runCufflinksWrapper, inTup)
+    # python runCufflinks.py --referenceGtf xxx.gtf *.bam
+    try:
+        optlist, args = getopt.getopt(args = sys.argv[1:], shortopts=None, longopts = [
+            'referenceGtf='])
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
+    refGtf = ""
+    for o, a in optlist:
+        if o == '--referenceGtf':
+            refGtf = a
+    if len(args) == 0:
+        print("No bam/sam files provided. Exiting...")
+        sys.exit(2)
+    pool = ThreadPool(4)
+    inTup = []
+    for f in args:
+        inTup.append((f,refGtf))
+    pool.map(runCufflinksWrapper, inTup)
 
-if s.isStdInEmpty():
-	# Process command line args
-	print("No StdIn")
-	print(helpDoc)
-elif len(sys.argv) != 3:
-	print("Incorrect number of arguments")
-	print(helpDoc)
-else:
-	referenceGtf = ''
-	if len(sys.argv) == 3 and sys.argv[1] == '--referenceGtf':
-		referenceGtf = sys.argv[2]
-	stdin = s.getStdIn()
-	filePrefixes = t.getPrefixForIDs(stdin)
-	# Generate input tuples for pool.map
-	inTup = []
-	for f in filePrefixes:
-		inTup.append((f,referenceGtf))
-	pool.map(runCufflinksWrapper, inTup)
+
+
+if __name__ == '__main__':
+    main()
 
 
 # print(len(sys.argv))
