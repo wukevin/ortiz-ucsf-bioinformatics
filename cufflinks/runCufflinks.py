@@ -94,7 +94,7 @@ def main():
     if len(args) == 0:
         print("No bam/sam files provided. Exiting...")
         sys.exit(2)
-    pool = ThreadPool(4)
+    pool = ThreadPool(5) # Empircal testing shows that even though 4 * 5 = 20, this is fine.
     inTup = []
     for f in args:
         inTup.append((f,refGtf))
