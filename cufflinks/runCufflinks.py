@@ -44,6 +44,7 @@ def runCufflinks(bamfile, refGtf):
     startTime = time.time()
     result = s.executeFunctions(command, captureOutput = True)
     resultFile = open(outputFolder + '/log.txt', mode = 'w')
+    resultFile.write(command + '\n\n\n')
     resultFile.write(result)
     resultFile.close()
     print("Finished cufflinks run in %s seconds" % (time.time()-startTime))
@@ -83,18 +84,24 @@ def main():
     # python runCufflinks.py --referenceGtf xxx.gtf *.bam
     try:
         optlist, args = getopt.getopt(args = sys.argv[1:], shortopts=None, longopts = [
-            'referenceGtf='])
+            'referenceGtf=', 'instances='])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(2)
     refGtf = ""
+    instances = 6
     for o, a in optlist:
         if o == '--referenceGtf':
             refGtf = a
+        if o == '--instances':
+            instances = int(a)
     if len(args) == 0:
         print("No bam/sam files provided. Exiting...")
         sys.exit(2)
-    pool = ThreadPool(5) # Empircal testing shows that even though 4 * 5 = 20, this is fine.
+    if len(refGtf) == 0:
+        print("No provdied referenceGtf. Exiting...")
+        sys.exit(2)
+    pool = ThreadPool(instances) # Empircal testing shows that even though 4 * 5 = 20, this is fine.
     inTup = []
     for f in args:
         inTup.append((f,refGtf))
