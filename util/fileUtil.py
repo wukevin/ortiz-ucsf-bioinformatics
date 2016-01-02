@@ -81,6 +81,7 @@ def stripExtension(filename, iterations = 1, verbose = False):
             extension = filename[i:]
             print('Removed extension ' + extension)
         filename = filename[:i]
+        iterations = iterations - 1
     return filename
 
 def getFastqGzPairs():
