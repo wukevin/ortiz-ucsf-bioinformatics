@@ -110,6 +110,10 @@ def main():
     elif gg is True:
         for f in args:
             assert '.bam' in f
-        executeTrinityGenomeGuidedMulti(args, instances)
+        if instances > 1:
+            executeTrinityGenomeGuidedMulti(args, instances)
+        else:
+            for f in args:
+                executeTrinityGenomeGuided(f, threadCount)
 if __name__ == "__main__":
     main()
