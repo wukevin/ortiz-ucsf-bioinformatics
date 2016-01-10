@@ -4,13 +4,14 @@ import getopt
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
+from multiprocessing import Pool as ThreadPool
 
 helpDoc = """
 
 """
 
 
-def executeTrinityGenomeGuided(bamfile, n):
+def executeTrinityGenomeGuided(bamfile, n = 8):
     assert bamfile[-4:] == '.bam'
     outputFolder = bamfile[:-4] + '_trinity_out'
     logfile = bamfile[:-4] + '.Trinity.log'
@@ -20,6 +21,10 @@ def executeTrinityGenomeGuided(bamfile, n):
     log = open(logfile, mode = 'w')
     log.write(result)
     log.close()
+
+def executeTrinityGenomeGuidedMulti(bamList, instances = 3):
+    pool = ThreadPool(instances)
+    pool.map(executeTrinityGenomeGuided, bamList)
 
 def executeTrinityFastq(fastq1, fastq2, n, rerun = False):
     lcs = f.longestCommonSubstring(fastq1, fastq2)
@@ -62,13 +67,14 @@ def main():
     # Get options
     try:
         optlist, args = getopt.getopt(args=sys.argv[1:], shortopts=None, longopts=[
-                                      'genomeGuided', 'fastq', 'cpu='])
+                                      'genomeGuided', 'fastq', 'cpu=', 'instances='])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(2)
     fq, gg = False, False
     threadCount = 16  # Default to 16 threads
     files = []
+    instanceCount = 3 # Defaults to 3 instances, 8 threads each.
     # Walk thorugh given options
     for o, a in optlist:
         if o == '--genomeGuided':
@@ -76,7 +82,9 @@ def main():
         elif o == '--fastq':
             fq = True
         elif o == '--cpu':
-            threadCount = a
+            threadCount = int(a)
+        elif o == '--instances':
+            instanceCount = int(a)
         else:
             print("Unrecognized argument")
             return None
@@ -102,7 +110,6 @@ def main():
     elif gg is True:
         for f in args:
             assert '.bam' in f
-        for f in args:
-            executeTrinityFastq(f, threadCount)
+        executeTrinityGenomeGuidedMulti(args, instances)
 if __name__ == "__main__":
     main()
