@@ -39,7 +39,7 @@ def pasa(file, clean, referenceGenome, cpu):
     command1Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -C -r -R -g %s --ALIGNERS gmap --CPU %s -e 15" % (referenceGenome, cpu)
     command2Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -R -g %s --ALIGNERS gmap --CPU %s -s 16" % (referenceGenome, cpu)
     if clean:
-        suffix = " -T %s -u %s" % (cleanedFasta, file) # The space in front is very important
+        suffix = " -t %s -T -u %s" % (cleanedFasta, file) # The space in front is very important
     else:
         suffix = " -t %s" % file
     command1 = command1Template + suffix
