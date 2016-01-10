@@ -30,10 +30,10 @@ def symlinkPasaConfig():
 def pasa(file, clean, referenceGenome, cpu):
     if clean:
         print("Cleaning " + file)
-        cleanedFasta = runSeqclean(file, 16)
+        cleanedFasta = runSeqclean(file, cpu)
     symlinkPasaConfig()
-    command1Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -C -r -R -g %s --ALIGNERS gmap --CPU 16 -e 15" % (referenceGenome)
-    command2Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -R -g %s --ALIGNERS gmap --CPU 16 -s 16" % (referenceGenome)
+    command1Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -C -r -R -g %s --ALIGNERS gmap --CPU %s -e 15" % (referenceGenome, cpu)
+    command2Template = "$PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -R -g %s --ALIGNERS gmap --CPU %s -s 16" % (referenceGenome, cpu)
     if clean:
         suffix = " -T %s -u %s" % (cleanedFasta, file) # The space in front is very important
     else:
@@ -54,7 +54,7 @@ def main():
 
     clean = False
     cpu = 16
-    referenceGenome = "FILL ME IN" # MUST FIN IN LATER
+    referenceGenome = "/media/rawData/genomes/hg19_gmap/hg19.fa"
     for o, a in optlist:
         if o == "--seqclean":
             clean = True
