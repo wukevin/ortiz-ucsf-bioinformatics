@@ -74,7 +74,7 @@ def main():
     fq, gg = False, False
     threadCount = 16  # Default to 16 threads
     files = []
-    instanceCount = 3 # Defaults to 3 instances, 8 threads each.
+    instances = 3 # Defaults to 3 instances, 8 threads each.
     # Walk thorugh given options
     for o, a in optlist:
         if o == '--genomeGuided':
@@ -84,7 +84,7 @@ def main():
         elif o == '--cpu':
             threadCount = int(a)
         elif o == '--instances':
-            instanceCount = int(a)
+            instances = int(a)
         else:
             print("Unrecognized argument")
             return None
