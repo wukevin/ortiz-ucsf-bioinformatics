@@ -16,9 +16,12 @@ import shellUtil as s
 from multiprocessing import Pool as ThreadPool
 
 def runSeqclean(fastaFile, numThreads = 16):
+    cleanedFasta = fastaFile + ".clean"
+    if os.path.exists(cleanedFasta):
+        print("Already cleaned.")
+        return cleanedFasta
     command = "seqclean %s -c %s -r -o" % (fastaFile, numThreads)
     s.executeFunctions(command, captureOutput = True)
-    cleanedFasta = fastaFile + ".clean"
     return cleanedFasta
 
 def symlinkPasaConfig():
