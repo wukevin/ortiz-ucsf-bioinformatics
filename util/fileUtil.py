@@ -89,7 +89,7 @@ def getFastqGzPairs():
     # fastqFilesBase = [stripKnownFileExtensions(x) for x in fastqFiles]
     # fastqFilesBase = set([x.rstrip("_12") for x in fastqFilesBase]) # remove the _1 or _2
     # fastqFilesBase = set([x[:-2] for x in fastqFilesBase])
-    fastqFilesBase = set([x:-8] for x in fastqFilesBase)
+    fastqFilesBase = set(x[:-8] for x in fastqFilesBase)
     result = []
     for base in fastqFilesBase:
         file1 = glob.glob(base + "_1.fastq.gz")
