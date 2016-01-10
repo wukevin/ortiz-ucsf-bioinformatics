@@ -9,7 +9,7 @@
 # $PASAHOME/scripts/Launch_PASA_pipeline.pl -c alignAssembly.config -R -g /home/ortiz-lab/Downloads/hg19/hg19.fa -t Trinity-GG.fasta.clean -T -u Trinity-GG.fasta --ALIGNERS gmap --CPU 16 -s 16 | tee log_cmd16-25
 # Formerly used the hg19.fa in the downloads folder, now using the hg19 in /media/Data/genomes/
 
-import sys, os
+import sys, os, getopt
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
