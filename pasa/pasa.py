@@ -37,7 +37,7 @@ def pasa(file, clean, referenceGenome, cpu):
     if clean:
         suffix = " -T %s -u %s" % (cleanedFasta, file) # The space in front is very important
     else:
-        suffix = " -t %s" file
+        suffix = " -t %s" % file
     command1 = command1Template + suffix
     s.executeFunctions(command1)
     command2 = command2Template + suffix
