@@ -10,6 +10,7 @@
 # Formerly used the hg19.fa in the downloads folder, now using the hg19 in /media/Data/genomes/
 
 import sys, os
+sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
 from multiprocessing import Pool as ThreadPool
