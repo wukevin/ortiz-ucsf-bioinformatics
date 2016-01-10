@@ -17,7 +17,7 @@ def executeTrinityGenomeGuided(bamfile, n = 8):
     logfile = bamfile[:-4] + '.Trinity.log'
     template = "trinity --genome_guided_bam %s --genome_guided_max_intron 11000 --max_memory 54G --CPU %s --output %s --verbose --full_cleanup" % (
         bamfile, n, outputFolder)
-    result = s.executeFunctions(template)
+    result = s.executeFunctions(template, captureOutput = True)
     log = open(logfile, mode = 'w')
     log.write(result)
     log.close()
