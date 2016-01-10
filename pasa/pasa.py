@@ -17,10 +17,11 @@ from multiprocessing import Pool as ThreadPool
 
 def runSeqclean(fastaFile, numThreads = 16):
     cleanedFasta = fastaFile + ".clean"
-    if os.path.exists(cleanedFasta):
+    cleanedFastaReport = fastaFile + ".cln"
+    if os.path.exists(cleanedFasta) and os.path.exists(cleanedFastaReport):
         print("Already cleaned.")
         return cleanedFasta
-    command = "seqclean %s -c %s -r -o" % (fastaFile, numThreads)
+    command = "seqclean %s -c %s -r %s -o %s" % (fastaFile, numThreads, cleanedFastaReport, cleanedFasta)
     s.executeFunctions(command, captureOutput = True)
     return cleanedFasta
 
