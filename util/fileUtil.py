@@ -100,6 +100,20 @@ def getFastqGzPairs():
             result.append(x)
     return result
 
+def pairGivenFastqFiles(fileList):
+    """Given a list of files, return a list of tuples, each tuple represneting a pair
+    of fastq files."""
+    for f in fileList:
+        assert '.fastq' in f
+    assert len(fileList) % 2 == 0 # Make sure fileList is even, otherwise can't have pairs
+    fileList = fileList.sort() # Sort so that pairs are guaranteed to be next to each other
+    result = []
+    while len(fileList > 0):
+        x, y = fileList.pop(), fileList.pop()
+        lcs = longestCommonSubstring(x,y)
+        assert len(lcs) > 0 # sanity check that the common substring is non-zero
+        result.append((x,y))
+    return result
 
 def meanFastqReadLength(filename):
     # Gets the average read length from a fastq file (gzipped or not works)

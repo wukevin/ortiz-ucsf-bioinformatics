@@ -10,13 +10,16 @@ helpDoc = """
 """
 
 
-def executeTrinityGenomeGuided(bamfile):
-    outputFolder = bamfile[:-4] + '_trinity_Out'
-    logfile = outputFolder + '/trinity.log'
-    template = "trinity --genome_guided_bam %s --genome_guided_max_intron 11000 --max_memory 54G --CPU 16 --output %s" % (
-        bamfile, outputFolder)
-    s.executeFunctions(template)
-
+def executeTrinityGenomeGuided(bamfile, n):
+    assert bamfile[-4:] == '.bam'
+    outputFolder = bamfile[:-4] + '_trinity_out'
+    logfile = bamfile[:-4] + '.Trinity.log'
+    template = "trinity --genome_guided_bam %s --genome_guided_max_intron 11000 --max_memory 54G --CPU %s --output %s --verbose --full_cleanup" % (
+        bamfile, n, outputFolder)
+    result = s.executeFunctions(template)
+    log = open(logfile, mode = 'w')
+    log.write(result)
+    log.close()
 
 def executeTrinityFastq(fastq1, fastq2, n, rerun = False):
     lcs = f.longestCommonSubstring(fastq1, fastq2)
@@ -59,28 +62,32 @@ def main():
     # Get options
     try:
         optlist, args = getopt.getopt(args=sys.argv[1:], shortopts=None, longopts=[
-                                      'all-files', 'genome-guided', 'cpu='])
+                                      'genomeGuided', 'fastq', 'cpu='])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(2)
-    runAll = False
-    fq = True
+    fq, gg = False, False
     threadCount = 16  # Default to 16 threads
     files = []
     # Walk thorugh given options
     for o, a in optlist:
-        if o == '--all-files':
-            runAll = True
-        elif o == '--genome-guided':
-            fq = False
-        if o == '--cpu':
+        if o == '--genomeGuided':
+            gg = True
+        elif o == '--fastq':
+            fq = True
+        elif o == '--cpu':
             threadCount = a
+        else:
+            print("Unrecognized argument")
+            return None
 
+    assert fq + gg == 1 # Only one can be set, either genome guided, or fastq
     # Caution: this section is not 100% done. Only enough to run what I need right now.
     # Run the wrappers
-    if runAll is True:
-        assert len(args) == 0
-        pairs = f.getFastqGzPairs()
+    if fq is True:
+        for f in args:
+            assert '.fastq' in f
+        pairs = f.pairGivenFastqFiles(args)
         # Walk through every pair in this dir
         for pair in pairs:
             print(pair)
@@ -92,6 +99,10 @@ def main():
                 x, y = pair[1], pair[0]
             print("Running trinity on\n%s\n%s" % (x, y))
             executeTrinityFastq(x, y, threadCount)
-
+    elif gg is True:
+        for f in args:
+            assert '.bam' in f
+        for f in args:
+            executeTrinityFastq(f, threadCount)
 if __name__ == "__main__":
     main()
