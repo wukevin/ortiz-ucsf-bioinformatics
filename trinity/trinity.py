@@ -11,7 +11,7 @@ helpDoc = """
 """
 
 
-def executeTrinityGenomeGuided(bamfile, threads = 8, memory = 20):
+def executeTrinityGenomeGuided(bamfile, threads = 8, memory = 20, fastaOnly = True):
     assert bamfile[-4:] == '.bam'
     outputFolder = bamfile[:-4] + '_trinity_out'
     logfile = bamfile[:-4] + '.Trinity.log'
@@ -21,6 +21,12 @@ def executeTrinityGenomeGuided(bamfile, threads = 8, memory = 20):
     log = open(logfile, mode = 'w')
     log.write(result)
     log.close()
+    # If we only want the fasta, we can remove everything else, and rename the fasta file 
+    if fastaOnly:
+        outputFasta = bamfile[:-4] + ".Trinity-GG.fasta"
+        copyCommand = 'cp %s/Trinity-GG.fasta ./%s' % (outputFolder, outputFasta)
+        s.executeFunctions(copyCommand)
+        removeCommand = 'rm -r %s/Dir_*' % (outputFolder)
 
 def executeTrinityGenomeGuidedMulti(bamList, instances = 3):
     pool = ThreadPool(instances)
