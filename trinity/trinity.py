@@ -27,6 +27,11 @@ def executeTrinityGenomeGuided(bamfile, threads = 8, memory = 20, fastaOnly = Tr
         copyCommand = 'cp %s/Trinity-GG.fasta ./%s' % (outputFolder, outputFasta)
         s.executeFunctions(copyCommand)
         removeCommand = 'rm -r %s/Dir_*' % (outputFolder)
+        s.executeFunctions(removeCommand)
+        compressCommand = 'pigz -p %s %s' % (threads, bamfile + '.frag_coverage.wig')
+        s.executeFunctions(compressCommand)
+        compressCommand = 'pigz -p %s %s' % (threads, bamfile + '.minC1.gff')
+        s.executeFunctions(compressCommand)
 
 def executeTrinityGenomeGuidedMulti(bamList, instances = 3):
     pool = ThreadPool(instances)
