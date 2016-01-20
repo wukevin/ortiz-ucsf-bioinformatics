@@ -32,6 +32,9 @@ def symlinkPasaConfig():
     symlink = "ln -s /home/ortiz-lab/Documents/kwu/scripts/pasa/alignAssembly.config ./"
     s.executeFunctions(symlink)
 
+def writeCustomPasaConfig(file):
+    """Generates a custom alignAssembly.config so that the simultaneous runs do not conflict."""
+
 def pasa(file, clean, referenceGenome, cpu):
     if clean:
         print("Cleaning " + file)
