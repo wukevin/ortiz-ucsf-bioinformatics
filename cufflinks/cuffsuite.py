@@ -10,6 +10,7 @@ import re
 import numpy as np
 from collections import namedtuple
 import csv
+import tqdm
 
 def readCufflinksTranscriptsGtf(cfFilename):
     transcript = namedtuple('transcript', 'chr start end gene_id transcript_id FPKM frac')
@@ -88,7 +89,8 @@ def aggregateCufflinksResults():
     files into a .csv file. This implementation ignores all the given confience intervals."""
     genesResults, transcriptsResults = {}, {}
     cufflinksDirs = glob.glob('*_cufflinks')
-    for d in cufflinksDirs:
+    print("Reading result files")
+    for d in tqdm.tqdm(cufflinksDirs):
         genesResult = readCufflinksGenesFPKM(d + '/genes.fpkm_tracking')
         transcriptsResult = readCufflinksIsoformsFPKM(d + '/isoforms.fpkm_tracking')
         # INSERT HERE
@@ -99,33 +101,40 @@ def aggregateCufflinksResults():
         genesResults[sampleName] = genesResult
         transcriptsResults[sampleName] = transcriptsResult
     # sanity check the results that every result file has the same genes/transcripts
+    print("Checking consistency of results")
+    # for result in genesResults:
+    #     for gene in genesResults[result].keys():
+    #         assert gene in genesResults[genesResults.keys()[0]].keys()
+    refGenes = set(genesResults[genesResults.keys()[0]].keys())
     for result in genesResults:
-        for gene in genesResults[result].keys():
-            assert gene in genesResults[genesResults.keys()[0]].keys()
+        assert refGenes == set(genesResults[result].keys())
+    refTrans = set(transcriptsResults[transcriptsResults.keys()[0]].keys())
     for result in transcriptsResults:
-        for transcript in genesResults[result].keys():
-            assert transcript in transcriptsResults[transcriptsResults.keys()[0]].keys()
+        assert refTrans == set(transcriptsResults[result].keys())
+        # for transcript in genesResults[result].keys():
+        #     assert transcript in transcriptsResults[transcriptsResults.keys()[0]].keys()
     # Write to .csv
+    print("Writing gene results to csv files")
     genesFilename, transcriptsFilename = 'aggregated_genes_FPKM.csv', 'aggregated_transcripts_FPKM.csv'
     genesFile = open(genesFilename, mode = 'w')
-    genesHeader = 'sample,' + ','.join(genesResults[0].keys()) + "\n"
+    genesHeader = 'sample,' + ','.join(genesResults[genesResults.keys()[0]].keys()) + "\n"
     genesFile.write(genesHeader)
-    for sample in genesResults: # Sample is a string of the sample
+    for sample in tqdm.tqdm(genesResults): # Sample is a string of the sample
         lineItems = [sample]
         result = genesResults[sample]
         for gene in result.keys():
-            lineItems.append(result[gene])
-        genesFile.write(','.join(lineItems) + '\n`')
+            lineItems.append(result[gene].FPKM)
+        genesFile.write(','.join(lineItems) + '\n')
     genesFile.close()
-
+    print("Writing isoforms results to csv files")
     transcriptsFile = open(transcriptsFilename, mode = 'w')
-    transcriptsHeader = 'sampmle,' + ','.join(transcriptsResults[0].keys()) + '\n'
+    transcriptsHeader = 'sampmle,' + ','.join(transcriptsResults[transcriptsResults.keys()[0]].keys()) + '\n'
     transcriptsFile.write(transcriptsHeader)
-    for sample in transcriptsResults:
+    for sample in tqdm.tqdm(transcriptsResults):
         lineItems = [sample]
         result = transcriptsResults[sample]
         for t in result.keys():
-            lineItems.append(result[t])
+            lineItems.append(result[t].FPKM)
         transcriptsFile.write(','.join(lineItems) + '\n')
     transcriptsFile.close()
     return None
