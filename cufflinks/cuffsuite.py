@@ -100,10 +100,10 @@ def aggregateCufflinksResults():
         transcriptsResults[sampleName] = transcriptsResult
     # sanity check the results that every result file has the same genes/transcripts
     for result in genesResults:
-        for gene in result.keys():
+        for gene in genesResults[result].keys():
             assert gene in genesResults[0].keys()
     for result in transcriptsResults:
-        for transcript in result.keys():
+        for transcript in genesResults[result].keys():
             assert transcript in transcriptsResults[0].keys()
     # Write to .csv
     genesFilename, transcriptsFilename = 'aggregated_genes_FPKM.csv', 'aggregated_transcripts_FPKM.csv'
