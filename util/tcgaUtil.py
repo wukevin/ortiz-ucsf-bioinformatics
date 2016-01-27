@@ -40,5 +40,3 @@ def getSequenceFilenameFromTCGAID(tcgaID, disease_abbr):
 			tokensFiltered.append(_padToThreeAddL(weirdNumber))
 			joined = '_'.join(tokensFiltered)
 			return joined
-
-print(getSequenceFilenameFromTCGAID('TCGA-D3-A3CE', 'SKCM'))
