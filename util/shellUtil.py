@@ -25,7 +25,7 @@ def executeFunctions(listOfFunc, parallel = False, simulate = False, captureOutp
             # print(out[1])
             outJoined = "\n***Finished stdout, starting stderr***\n".join(out)
             # out = subprocess.check_output(c,shell=True)
-            print(outJoined)
+            # print(outJoined)
             return outJoined
         else:
             subprocess.call(c, shell = True)

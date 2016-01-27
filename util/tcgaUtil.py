@@ -1,5 +1,7 @@
+import sys, subprocess, glob, os
+sys.path.append(os.environ['PIPELINEHOME'] + "/util/")
+import shellUtil as s
 import re
-import glob
 
 def getPrefixForIDs(ids, idmapfile = '/media/rawData/TCGA_SKCM/ids_to_filename.txt'):
 	idDict = dict()
@@ -16,3 +18,27 @@ def getPrefixForIDs(ids, idmapfile = '/media/rawData/TCGA_SKCM/ids_to_filename.t
 		# print(i)
 		prefixes.append(idDict[i])
 	return prefixes
+
+def getSequenceFilenameFromTCGAID(tcgaID, disease_abbr):
+	# command = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&legacy_sample_id=%s-*" | grep filename' % (disease_abbr, tcgaID)
+	def _padToThreeAddL(num):
+		num = num[0]
+		x = str(num)
+		while len(x) < 3:
+			x = '0' + x
+		x = 'L' + x
+		return x
+	command = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&legacy_sample_id=%s-*"' % (disease_abbr, tcgaID)
+	output = s.executeFunctions(command, captureOutput = True)
+	lines = output.split('\n')
+	for line in lines:
+		if 'filename' in line:
+			x = line.split('.')[2]
+			tokens = x.split('_')
+			tokensFiltered = [i for i in tokens if len(i) > 1]
+			weirdNumber = [i for i in tokens if len(i) == 1]
+			tokensFiltered.append(_padToThreeAddL(weirdNumber))
+			joined = '_'.join(tokensFiltered)
+			return joined
+
+print(getSequenceFilenameFromTCGAID('TCGA-D3-A3CE', 'SKCM'))
