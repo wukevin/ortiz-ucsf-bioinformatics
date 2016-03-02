@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, getopt
 sys.path.append(os.environ['PIPELINEHOME'] + "/util/")
 sys.path.append(os.environ['PIPELINEHOME'] + "/htseq/")
 # sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/htseq/")
@@ -39,7 +39,7 @@ def main():
     for o, a in optlist:
         if o == "--referenceGtf":
             referenceGtf = a
-        else if o == "--instances":
+        elif o == "--instances":
             instances = int(a)
     # Check that all args are bam files
     for arg in args:
