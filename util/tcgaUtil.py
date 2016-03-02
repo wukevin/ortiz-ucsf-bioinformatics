@@ -19,7 +19,7 @@ def getPrefixForIDs(ids, idmapfile = '/media/rawData/TCGA_SKCM/ids_to_filename.t
 		prefixes.append(idDict[i])
 	return prefixes
 
-def getSequenceFilenameFromTCGAID(tcgaID, disease_abbr):
+def getSequenceFilenameFromTCGABarcode(tcgaID, disease_abbr):
 	# command = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&legacy_sample_id=%s-*" | grep filename' % (disease_abbr, tcgaID)
 	def _padToThreeAddL(num):
 		num = num[0]
@@ -40,3 +40,30 @@ def getSequenceFilenameFromTCGAID(tcgaID, disease_abbr):
 			tokensFiltered.append(_padToThreeAddL(weirdNumber))
 			joined = '_'.join(tokensFiltered)
 			return joined
+
+def getMetadataFromSequenceFilename(filename, disease_abbr, metadataTag):
+	# Only supports from .bam or .fastq.gz or derivatives
+	# 140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out
+	# print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'UVM', 'legacy_sample_id'))
+	filename = filename.split('.')[0]
+	tokens = filename.split('_')
+	tokens = tokens[:6]
+	weirdNumberToken = [x for x in tokens if 'L' in x and len(x) == 4]
+	tokens.remove(weirdNumberToken[0])
+	weirdNumber = int(weirdNumberToken[0][1:])
+	tokens.insert(4, str(weirdNumber))
+	reconstructed = '_'.join(tokens)
+	# print(reconstructed)
+	queryString = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&filename=*%s*"' % (disease_abbr, reconstructed)
+	output = s.executeFunctions(queryString, captureOutput = True)
+	# print(output)
+	lines = output.split('\n')
+	for line in lines:
+		if "downloadable_file_count" in line:
+			num = int(line.split(':')[1])
+			if num != 1:
+				return ""
+	for line in lines:
+		if metadataTag in line:
+			return line.split(':')[1].strip()
+	return ""
