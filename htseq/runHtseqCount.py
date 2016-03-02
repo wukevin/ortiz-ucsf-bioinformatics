@@ -6,31 +6,15 @@ sys.path.append(os.environ['PIPELINEHOME'] + "/htseq/")
 import htseq as h
 import shellUtil as s
 
-# arguments = sys.argv[1:]
-
-# if s.isStdInEmpty():
-#   # Process command line args
-#   if len(arguments) != 3:
-#       print("Incorrect number of arguments")
-#       print(helpDoc)
-#   else:
-#       if arguments[0] == "--referenceGtf" and 'gtf' in arguments[1] and 'bam' in arguments[2]:
-#           h.htseqWrapper(arguments[2], arguments[1])
-#       else:
-#           print("Wrong arguments")
-#           print(helpDoc)
-# else:
-#   STDIN = s.getStdIn()
-#   if arguments[0] == "--referenceGtf" and 'gtf' in arguments[1]:
-#       h.htseqParallel(STDIN, arguments[1], threadCount = 16)
-#   else:
-#       print("Incorrect usage.")
-#       print(helpDoc)
+def help():
+    helpString = """ Wrapper for htseq-count. Takes in two arguments:
+                     --referenceGtf assembly.gtf (mandatory)
+                     --instances <INT> (optional, defaults to 16)"""
 
 def main():
     try:
         optlist, args = getopt.getopt(args = sys.argv[1:], shortopts=None, longopts = [
-            'referenceGtf=', 'instances='])
+            'referenceGtf=', 'instances=', 'help'])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(2)
@@ -41,6 +25,9 @@ def main():
             referenceGtf = a
         elif o == "--instances":
             instances = int(a)
+        elif o == "--help" or o == '-h':
+            help()
+            sys.exit()
     # Check that all args are bam files
     for arg in args:
         if ".bam" not in arg:
