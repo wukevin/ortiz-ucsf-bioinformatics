@@ -41,7 +41,7 @@ def getSequenceFilenameFromTCGABarcode(tcgaID, disease_abbr):
 			joined = '_'.join(tokensFiltered)
 			return joined
 
-def getMetadataFromSequenceFilename(filename, disease_abbr, metadataTag):
+def getMetadataFromSequenceFilename(filename, metadataTag):
 	# Only supports from .bam or .fastq.gz or derivatives
 	# 140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out
 	# print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'UVM', 'legacy_sample_id'))
@@ -54,7 +54,8 @@ def getMetadataFromSequenceFilename(filename, disease_abbr, metadataTag):
 	tokens.insert(4, str(weirdNumber))
 	reconstructed = '_'.join(tokens)
 	# print(reconstructed)
-	queryString = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&filename=*%s*"' % (disease_abbr, reconstructed)
+	# queryString = 'cgquery "disease_abbr=%s&refassem_short_name=unaligned&library_strategy=RNA-Seq&filename=*%s*"' % (disease_abbr, reconstructed)
+	queryString = 'cgquery "refassem_short_name=unaligned&library_strategy=RNA-Seq&filename=*%s*"' % (reconstructed)
 	output = s.executeFunctions(queryString, captureOutput = True)
 	# print(output)
 	lines = output.split('\n')
@@ -62,8 +63,10 @@ def getMetadataFromSequenceFilename(filename, disease_abbr, metadataTag):
 		if "downloadable_file_count" in line:
 			num = int(line.split(':')[1])
 			if num != 1:
-				return ""
+				return "ERROR"
 	for line in lines:
 		if metadataTag in line:
 			return line.split(':')[1].strip()
-	return ""
+	return "ERROR"
+
+print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'legacy_sample_id'))

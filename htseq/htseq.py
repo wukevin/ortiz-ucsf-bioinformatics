@@ -4,6 +4,7 @@ import fileUtil as f
 import shellUtil as s
 import re
 import numpy as np
+import tcgaUtil as t
 
 from multiprocessing import Pool as ThreadPool
 
@@ -78,7 +79,8 @@ def aggregateHtseqCountResults(listOfResultFiles, tableOutFile = 'aggregated_hts
 			table[gene].append(thisGeneVal)
 		assert len(table[gene]) == len(listOfResultFiles)
 	x = open(tableOutFile, 'w')
-	header = 'genes,' + ','.join(listOfResultFiles) + "\n"
+	resultBarcodes = [t.getMetadataFromSequenceFilename(i, 'legacy_sample_id') for i in listOfResultFiles]
+	header = 'genes,' + ','.join(resultBarcodes) + "\n"
 	x.write(header)
 	for gene in allGenes:
 		stringified = [str(g) for g in table[gene]]
