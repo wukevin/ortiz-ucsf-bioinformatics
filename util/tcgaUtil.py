@@ -69,4 +69,4 @@ def getMetadataFromSequenceFilename(filename, metadataTag):
 			return line.split(':')[1].strip()
 	return "ERROR"
 
-print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'legacy_sample_id'))
+# print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'legacy_sample_id'))
