@@ -1,42 +1,35 @@
 
 # test = subprocess.check_output('cgquery "participant_id=fc5b5d2f-0d03-45c2-b7a0-ba6ec108fe51&library_strategy=RNA-Seq"', shell = True)
 
-import sys, subprocess
-sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
+import sys, subprocess, glob, os, getopt
+sys.path.append(os.environ['PIPELINEHOME'] + "/util/")
 import fileUtil as f
 import shellUtil as s
+import tcgaUtil as t
 
-def getAnalysisIDs(participant_id): 
-    commandTemplate = 'cgquery "participant_id=%s&library_strategy=RNA-Seq"'
-    command = commandTemplate % (participant_id)
-    print(command)
-    output = subprocess.check_output(command, shell = True).splitlines()
-    ids = []
-    for line in output:
-        if "analysis_id" in line:
-            tokens = line.split(":")
-            tokens = [x.strip() for x in tokens]
-            ids.append(tokens[1])
-    return ids
+def main():
+    try:
+        optlist, args = getopt.getopt(args = sys.argv[1:], shortopts=None, longopts = [
+            'download', 'keyfile='])
+    except getopt.GetoptError as err:
+        print(err)
+        sys.exit(2)
+    download = False
+    keyfile = ""
+    for o, a in optlist:
+        if o == '--download':
+            download = True
+        elif o == '--keyfile':
+            keyfile = a
+    if download and len(keyfile) == 0:
+        print("If downloading, you need a keyfile")
+        return
+    # print(args)
+    if len(args) != 1:
+        print("Must supply query string without spaces")
+        return
+    t.queryAndDownload(args[0], keyfile, download)
+    
 
-def downloadFromAnalysisID(analysis_id, keyFile="/media/Data2/TCGA_SKCM/cghub.key"):
-    commandTemplate = ' gtdownload -v -c %s -d %s'
-    command = commandTemplate % (keyFile, analysis_id)
-    print(command)
-    # s.executeFunctions(command, simulate = True, captureOutput = False)
-
-# if (s.isStdInEmpty()):
-#     if len(sys.argv) < 2:
-#         print("You need to input something.")
-# else:
-#     stdin = s.getStdIn()
-#     for x in stdin:
-#         ids = getAnalysisIDs(x)
-#         for y in ids:
-#             downloadFromAnalysisID(y)
-
-def queryAndDownload(queryString, keyfile):
-    queryCommand = 'cgquery -o temp.xml "%s"' % (queryString)
-    s.executeFunctions(queryCommand)
-    downloadCommand = 'gtdownload -vv -c %s -d temp.xml' % (keyfile)
-    s.executeFunctions(downloadCommand)
+if __name__ == "__main__":
+    main()

@@ -41,6 +41,26 @@ def getSequenceFilenameFromTCGABarcode(tcgaID, disease_abbr):
 			joined = '_'.join(tokensFiltered)
 			return joined
 
+def queryAndDownload(queryString, keyfile, download = False):
+    queryCommand = 'cgquery -o temp.xml "%s"' % (queryString)
+    s.executeFunctions(queryCommand)
+    if download:
+	    downloadCommand = 'gtdownload -vv -c %s -d temp.xml' % (keyfile)
+	    s.executeFunctions(downloadCommand)
+
+def getAnalysisIDs(participant_id): 
+    commandTemplate = 'cgquery "participant_id=%s&library_strategy=RNA-Seq"'
+    command = commandTemplate % (participant_id)
+    print(command)
+    output = subprocess.check_output(command, shell = True).splitlines()
+    ids = []
+    for line in output:
+        if "analysis_id" in line:
+            tokens = line.split(":")
+            tokens = [x.strip() for x in tokens]
+            ids.append(tokens[1])
+    return ids
+
 def getMetadataFromSequenceFilename(filename, metadataTag):
 	# Only supports from .bam or .fastq.gz or derivatives
 	# 140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out
