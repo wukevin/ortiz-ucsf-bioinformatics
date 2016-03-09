@@ -65,6 +65,7 @@ def getMetadataFromSequenceFilename(filename, metadataTag):
 	# Only supports from .bam or .fastq.gz or derivatives
 	# 140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out
 	# print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'UVM', 'legacy_sample_id'))
+	print("Fetching metadata tag %s for: %s" % (metadataTag, filename))
 	filename = filename.split('.')[0]
 	tokens = filename.split('_')
 	tokens = tokens[:6]
