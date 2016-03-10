@@ -3,8 +3,8 @@ helpDoc = """Symlink this file to whatever directory your fastq.gz files are in,
 generate STAR .bam files for every fastq pair you have.
 """
 import sys, subprocess, os, glob, re
-sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/STAR/")
-sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
+sys.path.append(os.environ['PIPELINEHOME'] + "/STAR/")
+sys.path.append(os.environ['PIPELINEHOME'] + "/util/")
 import fileUtil as f
 import shellUtil as s
 import star
@@ -13,25 +13,27 @@ import os.path
 from multiprocessing import Pool as ThreadPool
 
 # k.runKallistoManualLength()
-numthreads = max(s.getAvailableThreads(),4)
+numthreads = max(s.getAvailableThreads(), 12)
 # pwd = os.getcwd()
-listOfPrefixes = glob.glob("*_1.fastq.gz") # Get all unique fastq pairs in current folder
-listOfPrefixes= [re.sub('_1.fastq.gz', '', x) for x in listOfPrefixes] # Remove the last bit
-# listOfPrefixes = listOfPrefixes[427:]
+# listOfPrefixes = glob.glob("*_1.fastq.gz") # Get all unique fastq pairs in current folder
+# listOfPrefixes= [re.sub('_1.fastq.gz', '', x) for x in listOfPrefixes] # Remove the last bit
+# # listOfPrefixes = listOfPrefixes[427:]
+# # print(len(listOfPrefixes))
+# for i in listOfPrefixes:# If already exists a bam, then don't redo it.
+#     fname = i + "_Aligned.sortedByCoord.out.bam"
+#     if os.path.isfile(fname):
+#         listOfPrefixes = [x for x in listOfPrefixes if x != i]
 # print(len(listOfPrefixes))
-for i in listOfPrefixes:# If already exists a bam, then don't redo it.
-    fname = i + "_Aligned.sortedByCoord.out.bam"
-    if os.path.isfile(fname):
-        listOfPrefixes = [x for x in listOfPrefixes if x != i]
-print(len(listOfPrefixes))
+fastqGzFiles = glob.glob("*.fastq.gz")
+fastqGzPairs = f.pairGivenFastqFiles(fastqGzFiles)
 
-pairFiles = []
-singleFiles = []
-for x in listOfPrefixes:
-    if os.path.isfile(x + "_2.fastq"):
-        pairFiles.append((x + "_1.fastq", x + "_2.fastq"))
-    else:
-        singleFiles.append(x + "_1.fastq")
+# pairFiles = []
+# singleFiles = []
+# for x in listOfPrefixes:
+#     if os.path.isfile(x + "_2.fastq"):
+#         pairFiles.append((x + "_1.fastq", x + "_2.fastq"))
+#     else:
+#         singleFiles.append(x + "_1.fastq")
 # listOfFiles = [(x + "_1.fastq", x + "_2.fastq") for x in listOfPrefixes]
 
 import time
@@ -56,13 +58,13 @@ def runStarSingleWrap(file):
 
 # Parallel(n_jobs=2)(delayed(runStarWrap)(i) for i in listOfFiles)
 
-for x in pairFiles:
+for x in fastqGzPairs:
     extractCommand = "zcat %s.gz > %s"
     extractCommandList = []
     extractCommandList.append(extractCommand % (x[0], x[0]))
     extractCommandList.append(extractCommand % (x[1], x[1]))
     pool = ThreadPool(2)
-    print("Extracting fastq files...")
+    print("Extracting fastq file pair...")
     pool.map(s.executeFunctions,extractCommandList)
     # s.executeFunctions(extractCommand % (x[0], x[0]), captureOutput=False)
     # s.executeFunctions(extractCommand % (x[1], x[1]), captureOutput=False)
@@ -70,10 +72,10 @@ for x in pairFiles:
     runStarPairWrap(x)
     s.executeFunctions("rm *.fastq")
 
-for x in singleFiles:
-    extractCommand = "zcat %s.gz > %s" % (x, x)
-    print("Extracting fastq files...")
-    s.executeFunctions(extractCommand)
-    print("Running STAR...")
-    runStarSingleWrap(x)
-    s.executeFunctions("rm *.fastq")
+# for x in singleFiles:
+#     extractCommand = "zcat %s.gz > %s" % (x, x)
+#     print("Extracting fastq files...")
+#     s.executeFunctions(extractCommand)
+#     print("Running STAR...")
+#     runStarSingleWrap(x)
+#     s.executeFunctions("rm *.fastq")
