@@ -38,7 +38,7 @@ fastqGzPairs = f.pairGivenFastqFiles(fastqGzFiles)
 
 import time
 
-def runStarPairWrap(tupleOfFiles):
+def runStarPairWrap(tupleOfFiles, numthreads = 12):
     print("\n\n")
     startTime = time.time()
     # print("Starting STAR run on " + str(tupleOfFiles))
