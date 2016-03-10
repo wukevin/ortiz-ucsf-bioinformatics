@@ -64,8 +64,8 @@ def runStarSingleWrap(file):
 for x in fastqGzPairs:
     extractCommand = "zcat %s > %s"
     extractCommandList = []
-    extractCommandList.append(extractCommand % (x[0], x[0]))
-    extractCommandList.append(extractCommand % (x[1], x[1]))
+    extractCommandList.append(extractCommand % (x[0], x[0][:len(x[0]) - 3]))
+    extractCommandList.append(extractCommand % (x[1], x[1][:len(x[1]) - 3]))
     pool = ThreadPool(2)
     print("Extracting fastq file pair...")
     pool.map(s.executeFunctions,extractCommandList)
