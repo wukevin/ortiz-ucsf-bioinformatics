@@ -108,7 +108,7 @@ def pairGivenFastqFiles(fileList):
     assert len(fileList) % 2 == 0 # Make sure fileList is even, otherwise can't have pairs
     fileList.sort() # Sort so that pairs are guaranteed to be next to each other
     result = []
-    while len(fileList > 0):
+    while len(fileList) > 0:
         x, y = fileList.pop(), fileList.pop()
         lcs = longestCommonSubstring(x,y)
         assert len(lcs) > 0 # sanity check that the common substring is non-zero
