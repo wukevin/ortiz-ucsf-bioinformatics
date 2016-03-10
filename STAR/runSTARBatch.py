@@ -59,7 +59,7 @@ def runStarSingleWrap(file):
 # Parallel(n_jobs=2)(delayed(runStarWrap)(i) for i in listOfFiles)
 
 for x in fastqGzPairs:
-    extractCommand = "zcat %s.gz > %s"
+    extractCommand = "zcat %s > %s"
     extractCommandList = []
     extractCommandList.append(extractCommand % (x[0], x[0]))
     extractCommandList.append(extractCommand % (x[1], x[1]))
