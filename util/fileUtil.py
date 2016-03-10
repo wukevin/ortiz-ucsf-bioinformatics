@@ -106,7 +106,7 @@ def pairGivenFastqFiles(fileList):
     for f in fileList:
         assert '.fastq' in f
     assert len(fileList) % 2 == 0 # Make sure fileList is even, otherwise can't have pairs
-    fileList = fileList.sort() # Sort so that pairs are guaranteed to be next to each other
+    fileList.sort() # Sort so that pairs are guaranteed to be next to each other
     result = []
     while len(fileList > 0):
         x, y = fileList.pop(), fileList.pop()
