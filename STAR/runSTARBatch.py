@@ -73,7 +73,7 @@ for x in fastqGzPairs:
     # s.executeFunctions(extractCommand % (x[0], x[0]), captureOutput=False)
     # s.executeFunctions(extractCommand % (x[1], x[1]), captureOutput=False)
     print("Running STAR...")
-    runStarPairWrap(x)
+    runStarPairWrap(extractedFiles)
     s.executeFunctions("rm *.fastq")
 
 # for x in singleFiles:
