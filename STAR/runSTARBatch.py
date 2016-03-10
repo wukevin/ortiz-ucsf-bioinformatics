@@ -13,7 +13,7 @@ import os.path
 from multiprocessing import Pool as ThreadPool
 
 # k.runKallistoManualLength()
-numthreads = max(s.getAvailableThreads(), 12)
+# numthreads = max(s.getAvailableThreads(), 12)
 # pwd = os.getcwd()
 # listOfPrefixes = glob.glob("*_1.fastq.gz") # Get all unique fastq pairs in current folder
 # listOfPrefixes= [re.sub('_1.fastq.gz', '', x) for x in listOfPrefixes] # Remove the last bit
@@ -52,7 +52,7 @@ def runStarPairWrap(tupleOfFiles):
     deltaTime = time.time() - startTime
     print("Ran STAR on " + str(tupleOfFiles) + " for " + str(deltaTime) + " seconds")
 
-def runStarSingleWrap(file):
+def runStarSingleWrap(file, numthreads = 12):
     print("\n\n")
     startTime = time.time()
     star.runStar(file, genome = "/media/rawData/genomes/STAR_genomeDir_hg19_vGATK", cpu = numthreads)
@@ -64,8 +64,9 @@ def runStarSingleWrap(file):
 for x in fastqGzPairs:
     extractCommand = "zcat %s > %s"
     extractCommandList = []
-    extractCommandList.append(extractCommand % (x[0], x[0][:len(x[0]) - 3]))
-    extractCommandList.append(extractCommand % (x[1], x[1][:len(x[1]) - 3]))
+    extractedFiles = (x[0][:len(x[0]) - 3], x[1][:len(x[1]) - 3])
+    extractCommandList.append(extractCommand % (x[0], extractedFiles[0]))
+    extractCommandList.append(extractCommand % (x[1], extractedFiles[1]))
     pool = ThreadPool(2)
     print("Extracting fastq file pair...")
     pool.map(s.executeFunctions,extractCommandList)

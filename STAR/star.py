@@ -38,9 +38,8 @@ def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19
 	if fastq2 != None:
 		fastqs = fastq1 + " " + fastq2
 	command = commandTemplate % (genome, fastqs, cpu, lcs)
-	#result = s.executeFunctions(command, captureOutput = True)
 	print(command)
-	result = s.executeFunctions(command)
+	result = s.executeFunctions(command, captureOutput = True)
 	return result
 
 def runStarGenomeNOTWORKING(fastq1, fastq2):
