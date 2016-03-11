@@ -20,7 +20,7 @@ Kevin Wu - Ortiz Lab UCSF - August 2015 - Updated March 2016"""
 # Model:
 # STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir /media/Data/genomes/STAR_index_hg19_vGATK/STAR_genomeDir_hg19_vGATK --readFilesIn $Forward $Reverse --runThreadN 16
 
-import sys, subprocess
+import sys, subprocess, os
 sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
