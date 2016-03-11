@@ -38,14 +38,15 @@ fastqGzPairs = f.pairGivenFastqFiles(fastqGzFiles)
 
 import time
 
-def runStarPairWrap(tupleOfFiles, numthreads = 12):
+def runStarPairWrap(tupleOfFiles, numthreads = 16):
     print("\n\n")
     startTime = time.time()
     # print("Starting STAR run on " + str(tupleOfFiles))
     result = star.runStar(tupleOfFiles[0], tupleOfFiles[1], "/media/rawData/genomes/STAR_genomeDir_hg19_vGATK", cpu = numthreads)
-    logfile = open(f.longestCommonSubstring(tupleOfFiles[0], tupleOfFiles[1]) + '.star.log', 'w')
-    logfile.write(result)
-    logfile.close()
+    if result != None:
+        logfile = open(f.longestCommonSubstring(tupleOfFiles[0], tupleOfFiles[1]) + '.star.log', 'w')
+        logfile.write(result)
+        logfile.close()
     # k.runKallistoManualLength(tupleOfFiles[0], tupleOfFiles[1], "/media/Data2/TCGA_SKCM/raw_data/MIRAT.kindex")
     # command = "python runSTAR.py %s %s %s" % (tupleOfFiles[0], tupleOfFiles[1], "/media/rawData/genomes/STAR_genomeDir_hg19_vGATK")
     # s.executeFunctions(command)
@@ -62,14 +63,17 @@ def runStarSingleWrap(file, numthreads = 12):
 # Parallel(n_jobs=2)(delayed(runStarWrap)(i) for i in listOfFiles)
 
 for x in fastqGzPairs:
-    extractCommand = "zcat %s > %s"
-    extractCommandList = []
     extractedFiles = (x[0][:len(x[0]) - 3], x[1][:len(x[1]) - 3])
-    extractCommandList.append(extractCommand % (x[0], extractedFiles[0]))
-    extractCommandList.append(extractCommand % (x[1], extractedFiles[1]))
-    pool = ThreadPool(2)
-    print("Extracting fastq file pair...")
-    pool.map(s.executeFunctions,extractCommandList)
+    if os.path.isfile(extractedFiles[0]) != True or os.path.isfile(extractedFiles[1]) != True:
+        extractCommand = "zcat %s > %s"
+        extractCommandList = []
+        extractCommandList.append(extractCommand % (x[0], extractedFiles[0]))
+        extractCommandList.append(extractCommand % (x[1], extractedFiles[1]))
+        pool = ThreadPool(2)
+        print("Extracting fastq file pair...")
+        pool.map(s.executeFunctions,extractCommandList)
+    else:
+        print("Fastq files already extracted.")
     # s.executeFunctions(extractCommand % (x[0], x[0]), captureOutput=False)
     # s.executeFunctions(extractCommand % (x[1], x[1]), captureOutput=False)
     print("Running STAR...")
