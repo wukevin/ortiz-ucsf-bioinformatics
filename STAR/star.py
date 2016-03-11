@@ -38,7 +38,7 @@ def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19
 	if fastq2 != None:
 		fastqs = fastq1 + " " + fastq2
 	command = commandTemplate % (genome, fastqs, cpu, lcs)
-	outFileName = outFileNamePrefix + "Aligned.sortedByCoord.out.bam"
+	outFileName = lcs + "Aligned.sortedByCoord.out.bam"
 	if os.path.isfile(outFileName):
 		print(outFileName  + " already exists. Skipping...")
 		return None
