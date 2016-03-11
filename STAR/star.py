@@ -15,7 +15,7 @@ beginning.
 Example usage:
 python runSTAR.py [--generate-genome] x.fastq y.fastq
 
-Kevin Wu - Ortiz Lab UCSF - August 2015"""
+Kevin Wu - Ortiz Lab UCSF - August 2015 - Updated March 2016"""
 
 # Model:
 # STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir /media/Data/genomes/STAR_index_hg19_vGATK/STAR_genomeDir_hg19_vGATK --readFilesIn $Forward $Reverse --runThreadN 16
@@ -38,6 +38,10 @@ def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19
 	if fastq2 != None:
 		fastqs = fastq1 + " " + fastq2
 	command = commandTemplate % (genome, fastqs, cpu, lcs)
+	outFileName = outFileNamePrefix + "Aligned.sortedByCoord.out.bam"
+	if os.path.isfile(outFileName):
+		print(outFileName  + " already exists. Skipping...")
+		return None
 	print(command)
 	result = s.executeFunctions(command, captureOutput = True)
 	return result

@@ -43,7 +43,7 @@ def runStarPairWrap(tupleOfFiles, numthreads = 12):
     startTime = time.time()
     # print("Starting STAR run on " + str(tupleOfFiles))
     result = star.runStar(tupleOfFiles[0], tupleOfFiles[1], "/media/rawData/genomes/STAR_genomeDir_hg19_vGATK", cpu = numthreads)
-    logfile = open(f.lcs(tupleOfFiles[0], tupleOfFiles[1]) + '.star.log', 'w')
+    logfile = open(f.longestCommonSubstring(tupleOfFiles[0], tupleOfFiles[1]) + '.star.log', 'w')
     logfile.write(result)
     logfile.close()
     # k.runKallistoManualLength(tupleOfFiles[0], tupleOfFiles[1], "/media/Data2/TCGA_SKCM/raw_data/MIRAT.kindex")
