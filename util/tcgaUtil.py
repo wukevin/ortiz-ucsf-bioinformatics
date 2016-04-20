@@ -61,7 +61,7 @@ def getAnalysisIDs(participant_id):
             ids.append(tokens[1])
     return ids
 
-def getMetadataFromSequenceFilename(filename, metadataTag):
+def getMetadataFromSequenceFilename(filename, metadataTag = 'legacy_sample_id'):
 	# Only supports from .bam or .fastq.gz or derivatives
 	# 140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out
 	# print(getMetadataFromSequenceFilename('140624_UNC15-SN850_0372_AC4L6NACXX_ACTGAT_L007_Aligned.sortedByCoord.out.bam', 'UVM', 'legacy_sample_id'))
@@ -73,6 +73,8 @@ def getMetadataFromSequenceFilename(filename, metadataTag):
 	filename = filename.split('.')[0]
 	tokens = filename.split('_')
 	tokens = tokens[:6]
+	tokens[-1] = tokens[-1][:4]
+	print(tokens)
 	weirdNumberToken = [x for x in tokens if 'L' in x and len(x) == 4]
 	tokens.remove(weirdNumberToken[0])
 	weirdNumber = int(weirdNumberToken[0][1:])
