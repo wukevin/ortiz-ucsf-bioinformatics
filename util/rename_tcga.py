@@ -39,12 +39,13 @@ def main():
     suffix = '.bam'
     simulate = False
     for o, a in optlist:
+        # print(o)
         if o == '--suffix':
             suffix = a
-        if o == 'simulate':
+        elif o == '--simulate':
             simulate = True
         else:
-            print("Unrecognized argument.")
+            print("Unrecognized option: " + o)
             sys.exit(2)
     fileRename(suffix, simulate)
 
