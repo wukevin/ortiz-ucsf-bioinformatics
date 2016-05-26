@@ -9,6 +9,7 @@ import fileUtil as f
 import shellUtil as s
 import star
 import os.path
+import getopt
 
 from multiprocessing import Pool as ThreadPool
 
@@ -80,7 +81,8 @@ def main():
         print("No genome directory specified. Exiting.")
         sys.exit(2)
 
-    for x in args:
+    pairedFiles = f.pairGivenFastqFiles(args)
+    for x in pairedFiles:
         extractedFiles = (x[0][:len(x[0]) - 3], x[1][:len(x[1]) - 3])
         if os.path.isfile(extractedFiles[0]) != True or os.path.isfile(extractedFiles[1]) != True:
             extractCommand = "zcat %s > %s"
@@ -94,7 +96,7 @@ def main():
             print("Fastq files already extracted.")
         # s.executeFunctions(extractCommand % (x[0], x[0]), captureOutput=False)
         # s.executeFunctions(extractCommand % (x[1], x[1]), captureOutput=False)
-        print("Running STAR...")
+        print("Running STAR on %s and %s" % (extractedFiles))
         runStarPairWrap(extractedFiles, genomeDir)
         s.executeFunctions("rm *.fastq")
     star.unloadGenome(genomeDir)
