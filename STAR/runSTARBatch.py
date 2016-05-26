@@ -42,15 +42,13 @@ import time
 def runStarPairWrap(tupleOfFiles, genome, numthreads = 16):
     print("\n\n")
     startTime = time.time()
-    # print("Starting STAR run on " + str(tupleOfFiles))
+    print("Starting STAR run on %s and %s" % tupleOfFiles)
     result = star.runStar(tupleOfFiles[0], tupleOfFiles[1], genome, cpu = numthreads)
     if result != None:
         logfile = open(f.longestCommonSubstring(tupleOfFiles[0], tupleOfFiles[1]) + '.star.log', 'w')
         logfile.write(result)
         logfile.close()
-    # k.runKallistoManualLength(tupleOfFiles[0], tupleOfFiles[1], "/media/Data2/TCGA_SKCM/raw_data/MIRAT.kindex")
     # command = "python runSTAR.py %s %s %s" % (tupleOfFiles[0], tupleOfFiles[1], "/media/rawData/genomes/STAR_genomeDir_hg19_vGATK")
-    # s.executeFunctions(command)
     deltaTime = time.time() - startTime
     print("Ran STAR on " + str(tupleOfFiles) + " for " + str(deltaTime) + " seconds")
 
@@ -96,7 +94,7 @@ def main():
             print("Fastq files already extracted.")
         # s.executeFunctions(extractCommand % (x[0], x[0]), captureOutput=False)
         # s.executeFunctions(extractCommand % (x[1], x[1]), captureOutput=False)
-        print("Running STAR on %s and %s" % (extractedFiles))
+        # print("Running STAR on %s and %s" % (extractedFiles))
         runStarPairWrap(extractedFiles, genomeDir)
         s.executeFunctions("rm *.fastq")
     star.unloadGenome(genomeDir)

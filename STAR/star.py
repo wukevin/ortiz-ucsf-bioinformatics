@@ -39,7 +39,8 @@ def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19
 	lcs = lcs[:-2]
 	if fastq2 != None:
 		lcs = f.longestCommonSubstring(fastq1, fastq2) # lcs = longest common substring
-	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s --genomeLoad LoadAndKeep"
+	# commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s --genomeLoad LoadAndKeep"
+	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s"
 	if "gz" in fastq1 and "gz" in fastq2:
 		commandTemplate = commandTemplate + " --readFilesCommand zcat"
 	fastqs = fastq1
