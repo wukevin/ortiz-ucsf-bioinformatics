@@ -25,13 +25,21 @@ sys.path.append("/home/ortiz-lab/Documents/kwu/scripts/util/")
 import fileUtil as f
 import shellUtil as s
 
+def loadGenome(genomeDir):
+	command = "STAR --genomeDir %s --genomeLoad LoadAndExit" % (genomeDir)
+	s.executeFunctions(command)
+
+def unloadGenome(genomeDir):
+	command = "STAR --genomeDir %s --genomeLoad Remove" % (genomeDir)
+	s.executeFunctions(command)
+
 def runStar(fastq1, fastq2 = None, genome = "/media/Data/genomes/STAR_index_hg19_vGATK/STAR_genomeDir_hg19_vGATK", cpu = 16):
 	# Runs STAR to output a coordinate soorted BAM file that is compatible with cuff
 	lcs = f.stripKnownFileExtensions(fastq1)
 	lcs = lcs[:-2]
 	if fastq2 != None:
 		lcs = f.longestCommonSubstring(fastq1, fastq2) # lcs = longest common substring
-	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s"
+	commandTemplate = "STAR --outSAMstrandField intronMotif --outFilterIntronMotifs RemoveNoncanonical --outSAMtype BAM SortedByCoordinate --genomeDir %s --readFilesIn %s --runThreadN %s --outFileNamePrefix %s --genomeLoad LoadAndKeep"
 	if "gz" in fastq1 and "gz" in fastq2:
 		commandTemplate = commandTemplate + " --readFilesCommand zcat"
 	fastqs = fastq1
